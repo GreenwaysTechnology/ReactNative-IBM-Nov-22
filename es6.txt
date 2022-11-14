@@ -1,0 +1,406 @@
+				 React Native
+...................................................................................
+
+			   Software setup
+...................................................................................
+1.node.js - 14 onwards
+2.vs code 
+....................................................................................
+What is javascript?
+ Javascript is programming language.
+ Javascript is Object based,functional style programming language.
+
+Why javascript was created?
+  javascript was created for web computing , to process rendred html inside browser
+js language for processing rendered html pages, which was called "DOM Programming"
+ After 2007,after node js, js moved into building server side apps
+ After 2008, js moved into mobile app dev as well.
+
+Now a days, js is every where.
+
+What is ecma?
+Ecma International is an industry association dedicated to the standardization of information and communication systems
+
+after js created by netscap , the language was submitted to ECMA committe. ECMA committe standarized the language, according to ecma
+
+javascript and its version
+1.js/ecma/es 1.0
+2.es 3.0
+3.es 4.0
+4.es 5.0
+6.es 6.0/ecma 2012 to 2015
+7.es 7
+8.es 8
+9.es 9
+10.es 10
+
+What is ES(ECMA Script) 6?
+  ES 6 is new Javascript version
+
+JS session plan:
+
+1.JS language fundamentals
+2.JS functions
+3.js objects and features
+4.async programming and styles
+
+
+1.JS language fundamentals
+
+1.variable declarations
+ var - ES 5 keyword - dont use in ES 6 application
+ let /const - es 6 keywords
+
+2.literals -values
+   strings,numbers,boolean,undefined,NaN,infinity,function,null,object
+....................................................................................
+			   Project setup
+..................................................................................
+
+
+steps:
+E:\session\IBM\2022\nov\reactnative>mkdir es6apps
+E:\session\IBM\2022\nov\reactnative>cd  es6apps
+E:\session\IBM\2022\nov\reactnative\es6apps>mkdir src
+E:\session\IBM\2022\nov\reactnative\es6apps>code .
+
+
+How to compile js code? and How to run compiled code?
+
+Unlike java,c, c++, js has no separate compiler, rather compiler is packed along with
+one software called "java script engine"
+
+javascript is engine is program distributed by many browser vendors.
+
+google chrome - v8
+
+google release v8 in two mode
+
+1.standalone mode - node js
+2.embeded mode - part of browser(chrome)
+
+by js programs are not compiled and kept inside disk rather js engine compiles the code onfly and run it.
+....................................................................................
+
+Javascript is dynamic typed - The datatype of variable is idenfitied during runtime only.
+
+Literals
+ strings,
+ numbers,
+ boolean,
+ undefined,
+ NaN,
+ infinity,
+ function,
+ null,
+ object
+
+variable declaration:
+
+ var | let | const variableName=literal(value)
+
+ var vs let
+ let vs const
+
+
+strings 
+
+1. declared using  "" ,'',``(es6)
+2. 16 bit unicode character
+
+`` - back tick notation:
+-string interpolation
+-multi line string literal
+
+//variable declaration; string
+//using var 
+var firstName = "Subramanian"
+//using let 
+let lastName = "Murugan"
+//log 
+console.log("Name" + firstName + lastName);
+console.log("Name ", firstName, lastName);
+//es 6 back tick notation
+console.log(`Name ${firstName} ${lastName}`);
+
+//using es 5 + operator
+let title = 'IBM'
+let doc = "<html>" +
+    "<head>" +
+    "<title>" + title + "</title>" +
+    "</head>" +
+    "<body>" +
+    "<h1>Hello</h1>" +
+    "</body>";
+console.log(doc)
+
+//backtic noation : multi line strings
+let docOne = `<html>
+           <head>
+            <title>${title}</title>
+            </head>
+          <body>
+            <h1>Hello</h1>
+          </body>
+        `;
+console.log(docOne)
+
+...................................................................................
+
+2.Numbers
+
+-all numbers size is 64 bit aka double.
+
+//numbers
+let qty = 100
+let price = 1000
+let totalPrice = qty * price
+console.log(`The Price is ${totalPrice}`);
+
+...................................................................................
+
+3.Booleans
+  - 1 bit value eiether 0 or 1;
+ - offers built in literal value called true/false
+
+// ; optional booleans
+
+let isValid = true
+let isEnabled = false
+console.log(`Is Valid ${isValid} is Enabled ${isEnabled}`)
+
+.............................................................................
+
+3.undefined:
+ -undefined; if variable declared but not initalized with any valid literals
+//undefined 
+let qty
+let price 
+console.log(`Qty ${qty} Price ${price}`)
+
+
+4.NaN -  Not a Number
+
+ -NaN - not a number; it is numerical error code.during numerical computation, 
+
+js engine
+ -may throw error - NaN ; 
+ -NaN is not valid value, it is error , need to be fixed if you get.
+
+when you will get NaN.
+1.if you do compuation against undefined variables.
+
+let qty // undefined
+let price = 100 //number
+
+let totalPrice = qty * price  //undefined * number=>NaN
+
+console.log(`Qty ${qty} Price ${price} totalPrice ${totalPrice}`)
+
+2.During type conversion
+
+Type conversion - String to Number
+
+1.implicit type conversion
+   conversion happens automatically
+2.explcit type conversion
+   conversion happens through conversion apis and operators
+
+//type conversion
+
+let a = 10  // number
+let b = "20" // string but value is number 
+
+let c = a * b  //here js conversion b(string) to number automatically - implicit
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using parseFunction
+c = a * parseInt(b)
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using Number function 
+c = a * Number(b)
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using tenary + opeartor
+c = a * +b
+console.log(`a ${a} b ${b} c ${c}`)
+
+
+........
+
+//type conversion and NaN
+
+let a = 10  // number
+let b = "$20" // string but value is number 
+
+let c = a * b  //here js conversion b(string) to number automatically - implicit
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using parseFunction
+c = a * parseInt(b)
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using Number function 
+c = a * Number(b)
+console.log(`a ${a} b ${b} c ${c}`)
+
+//explicit conversion using tenary + opeartor
+c = a * +b
+console.log(`a ${a} b ${b} c ${c}`)
+
+
+Infinity:
+.........
+
+-div/0 -
+
+let price = 100
+let tds = 0
+let totalTax = price / tds
+console.log(`Price ${price} TDS ${tds} ToalTax ${totalTax}`)
+.....................................................................................
+			 const 
+
+//const are read only -  cant be reinialized
+
+let a = 10
+console.log(`A ${a}`)
+a = 90
+console.log(`A ${a}`)
+
+const b = 10
+console.log(`B ${b}`)
+b=100 // cant be reinalized
+console.log(`B ${b}`)
+....................................................................................
+				Advanced Booleans
+.....................................................................................
+
+In javascript every thing is true,except the following values
+
+Falsy Values:
+.............
+1.boolean false
+2.0
+3.undefined
+4.NaN
+5.empty string("",'')
+6.null
+
+Truthy values are except the above values are considered truthy values....
+let myvar //undefined
+
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+myvar = 0
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+
+myvar = ""
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+
+myvar = 10 * undefined
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+
+
+myvar = null
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+
+myvar = false
+if (myvar) {
+    console.log(`${myvar} is valid`)
+} else {
+    console.log(`${myvar} is invalid`)
+}
+
+//
+let mynewVar = "subramanian"
+if (mynewVar) {
+    console.log(`${mynewVar} is valid`)
+} else {
+    console.log(`${mynewVar} is invalid`)
+}
+mynewVar = 12
+if (mynewVar) {
+    console.log(`${mynewVar} is valid`)
+} else {
+    console.log(`${mynewVar} is invalid`)
+}
+.....................................................................................
+Operators:
+
+==  - only value match
+=== : Strict match -  type + value
+
+//== and ===
+
+let a = 10
+let b = "10"
+
+if (a == b) {
+    console.log("a and b are equal")
+} else {
+    console.log("a and b are not equal")
+}
+
+//test both value and type -  both must match- if it is true, then only it is true
+if (a === b) {
+    console.log("a and b are equal")
+} else {
+    console.log("a and b are not equal")
+}
+.....................................................................................
+tenary:
+......
+ To replace if else
+ based on truthy and falsy values...
+
+//tenary operator
+
+let a = 10
+let b = 20
+if (a === b) {
+    console.log("a and b are equal")
+} else {
+    console.log("a and b are not equal")
+}
+//using tenary
+(a === b) ? console.log("a and b are equal") : console.log("a and b are not equal")
+
+let c = (a === b) ? "a and b are equal" : "a and b are not equal"
+console.log(c)
+...................................................................................
+				Functions
+..................................................................................
+
+
+
+
+
+
+
+
+
+
+
+
+
