@@ -392,6 +392,129 @@ console.log(c)
 				Functions
 ..................................................................................
 
+function is basic building block of javascript.
+//functions -
+
+//basic function delclaration and invocation
+
+function sayHello() {
+    console.log('Hello function')
+}
+sayHello()
+
+
+//function ars and parameters
+//a and b are args
+function add(a, b) {
+    let c = a + b
+    console.log(`The add result is ${c}`)
+}
+//10,10 are parameters
+add(10, 10)
+//
+let x = 10
+let y = 90
+add(x, y)
+.................
+
+//es 6 default args 
+function add(a = 0, b = 0) {
+    console.log(`a ${a} b ${b}`)
+    let c = a + b
+    console.log(`The add result is ${c}`)
+}
+add(10, 10)
+add() // no value is passed
+.............
+
+Returning value:
+function add(a = 0, b = 0) {
+    return a + b
+}
+console.log(`The result is ${add(10,10)}`)
+..................................................................................
+			  Higher order function
+..................................................................................
+
+Every function is literal, since funcition literal
+
+ => can be assigned to a variable
+ => can be passed as parameter to another function
+ => can be returned from another funcition.
+//function as literal
+
+//synax -1 
+function sayHello(name = 'defaultName') {
+    console.log(`Hello ${name}`)
+}
+const hello = sayHello // here we are not calling 
+//if function is assigned to a variable, that variable can be used to invoke that function.
+hello('subramanian')
+
+//syntax 2: anonmous function 
+const hai = function (name = 'default') {
+    console.log(`Hai ${name}`)
+}
+hai('Subramanian')
+
+const add = function (a = 0, b = 0) {
+    return a + b
+}
+console.log(add(10,10))
+.....................................................................................
+			   Arrow Functions
+.....................................................................................
+
+Arrow functions replacement for es 5 anonmous function with simple ,elegant syntax.
+
+//es 5 anonmous function
+let hello = function (name = 'default') {
+    console.log(`Hello ${name}`)
+}
+hello('Subramanian')
+//es 6 arrow function
+let hai = (name = 'default') => {
+    console.log(`Hai ${name}`)
+}
+hai('Subramanian')
+//short cuts for arrows
+//if function has only one line of body : remove {}
+hai = (name = 'default') => console.log(`Hai ${name}`)
+hai('Subramanian')
+
+//returns and arrow
+let add = function (a = 10, b = 20) {
+    return a + b
+}
+console.log(add())
+//arrow 
+add = (a = 10, b = 20) => {
+    return a + b
+}
+console.log(add())
+//short cut :if function returns only we can remove {} and return statement
+add = (a = 10, b = 20) => a + b
+console.log(add())
+
+//if function takes single arg no default value, and return the same 
+let getStockValue = function (value) {
+    return value
+}
+console.log(getStockValue(10))
+
+//arrow
+getStockValue = (value) => value
+console.log(getStockValue(10))
+//if no default,single arg , we can remove ()
+getStockValue = value => value
+console.log(getStockValue(10))
+.....................................................................................
+java script functions are first-class, which means they can be stored in variables    and data structures, and can be passed as arguments to and returned from other higher-order functions.
+
+How to pass function as parameter to another? 
+
+
+
 
 
 

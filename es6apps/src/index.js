@@ -1,14 +1,23 @@
-//tenary operator
+//how to pass values into function .
 
-let a = 10
-let b = 20
-if (a === b) {
-    console.log("a and b are equal")
-} else {
-    console.log("a and b are not equal")
+function add(a, b) {
+    let c = a + b
+    console.log(c)
 }
-//using tenary
-(a === b) ? console.log("a and b are equal") : console.log("a and b are not equal")
+add(10, 10)
+let x = 10
+let y = 20
+add(x, y)
+/////////////////////////////////////////////////////////////////////////////////////
 
-let c = (a === b) ? "a and b are equal" : "a and b are not equal"
-console.log(c)
+function sayHello(hello) {
+    hello()
+}
+//pass function as parameter
+sayHello(function () {
+    console.log('Hello')
+})
+let myHello = function(){
+    console.log('my Hello')
+}
+sayHello(myHello)
