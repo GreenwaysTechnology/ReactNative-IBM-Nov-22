@@ -513,6 +513,602 @@ java script functions are first-class, which means they can be stored in variabl
 
 How to pass function as parameter to another? 
 
+//how to pass values into function .
+
+function add(a, b) {
+    let c = a + b
+    console.log(c)
+}
+add(10, 10)
+let x = 10
+let y = 20
+add(x, y)
+/////////////////////////////////////////////////////////////////////////////////////
+
+function sayHello(hello) {
+    hello()
+}
+//pass function as parameter
+sayHello(function () {
+    console.log('Hello')
+})
+let myHello = function(){
+    console.log('my Hello')
+}
+sayHello(myHello)
+
+.........................................
+
+
+//arrow functions : function as parameter
+const sayHello = hello => hello()
+//pass function as parameters
+// sayHello(function () {
+//     console.log('hello')
+// })
+
+sayHello(() => console.log('hello'))
+const hello = () => console.log('my new hello')
+sayHello(hello)
+...................................................................................
+			 HOF - with complex logic
+...................................................................................
+
+//
+const login = (name = 'admin', password = 'admin', resolve, reject) => {
+    if (name === 'admin' && password === 'admin') {
+        resolve('Login success')
+    } else {
+        reject('Login failed')
+    }
+}
+
+login('admin', 'admin', function (status) {
+    console.log(status)
+}, function (err) {
+    console.log(err)
+})
+
+login('admin', 'admin', status => console.log(status), err => console.log(err))
+
+....................................................................................
+			 HOF-functions can be returned from another function
+.....................................................................................
+
+//how to return function from another
+
+// function counter() {
+//     console.log('counter')
+//     return function inc() {
+//         console.log('inc')
+//     }
+// }
+// function counter() {
+//     console.log('counter')
+//     return function () {
+//         console.log('inc')
+//     }
+// }
+
+// function counter() {
+//     console.log('counter')
+//     return () => console.log('inc')
+// }
+
+
+// const counter = () => {
+//     console.log('counter')
+//     return () => console.log('inc')
+// }
+
+
+const counter = () => () => console.log('inc')
+// const fn = counter()
+// console.log(fn)
+// fn()
+counter()()
+..................
+
+// const counter = () => {
+//     return (value) => {
+//         return value * 2
+//     }
+// }
+const counter = () => value => value * 2
+console.log(counter()(10))
+.....................................................................................
+			Objects
+.....................................................................................
+Js is object based language.
+
+How to create objects?
+
+1.Constructor pattern
+  es 5 way - function
+  es 6 way - class
+2.literal Patterns
+  no class,no functions
+
+
+ES 5 functions
+//object template.
+
+function Employee(id = 0, name = 'default', salary = 0) {
+    //instance variables
+    this.id = id
+    this.name = name
+    this.salary = salary
+    //instance methods
+    this.calculateSalary = (noOfdays) => {
+        return this.salary * noOfdays
+    }
+}
+//create object  
+//emp is reference variable
+//new is operator
+//Employee() , constructor call 
+let emp = new Employee(12, 'Subramanian', 1000)
+console.log(`id ${emp.id} ${emp.name} ${emp.calculateSalary(100)}`)
+
+.....................................................................................
+
+class Based:
+//object template.
+
+// function Employee(id = 0, name = 'default', salary = 0) {
+//     //instance variables
+//     this.id = id
+//     this.name = name
+//     this.salary = salary
+//     //instance methods
+//     this.calculateSalary = (noOfdays) => {
+//         return this.salary * noOfdays
+//     }
+// }
+
+class Employee {
+    constructor(id = 0, name = 'default', salary = 0) {
+        //instance variables
+        this.id = id
+        this.name = name
+        this.salary = salary
+    }
+    //instance methods
+    // calculateSalary = (noOfdays) => {
+    //     return this.salary * noOfdays
+    // }
+    calculateSalary(noOfdays) {
+        return this.salary * noOfdays
+    }
+}
+//create object  
+//emp is reference variable
+//new is operator
+//Employee() , constructor call 
+let emp = new Employee(12, 'Subramanian', 1000)
+console.log(`id ${emp.id} ${emp.name} ${emp.calculateSalary(100)}`)
+....................................................................................
+				Code Reuse - Hierachy
+
+There are two types of hierachy
+
+1.IS-A - inheritance
+   es 5 inheritance -  prototype based inheritance
+   es 6 inheritance - class based inheritance.
+2.HAS-A -compostion
+
+//base class
+class Account {
+    constructor() {
+        console.log('Account ')
+    }
+    //methods
+    deposit() {
+        return 10
+    }
+    withdraw() {
+        return 50
+    }
+}
+
+//derived
+class SavingsAccount extends Account {
+    constructor() {
+        super()
+        console.log('SavingsAccount ')
+    }
+    //override
+    deposit() {
+        return 10 * super.deposit()
+    }
+    withdraw() {
+        return 20 * super.withdraw()
+    }
+}
+
+let sb = new SavingsAccount()
+console.log(sb.deposit())
+console.log(sb.withdraw())
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+//literal objects 
+let customer = {
+    id: 1,
+    name: 'Subramanian',
+    city: 'Coimbatore'
+}
+console.log(customer.id, customer.name, customer.city)
+customer.id = 90
+customer.name = 'ram'
+console.log(customer.id, customer.name, customer.city)
+
+//complex literal : has -a : object has other objectPosition: 
+
+let person = {
+    id: 1,
+    name: 'Subramanian',
+    address: {
+        street: '10th street',
+        city: 'Coimbatore'
+    }
+}
+console.log(person.id, person.name, person.address.city)
+....................................................................................
+				Object Destructuring - es 6 feature
+.................................................................................
+
+How to pass object as parameter to function and print?
+
+
+function displayEmployee(employee) {
+
+    //print employee
+    console.log(`id ${employee.id}`)
+    console.log(`name ${employee.name}`)
+    console.log(`salary ${employee.salary}`)
+    console.log(`city ${employee.address.city}`)
+
+}
+
+//pass object as parameter
+displayEmployee({ id: 1, name: 'Subramanian', salary: 2000, address: { city: 'Coimbatore' } })
+
+let emp = {
+    id: 1,
+    name: 'Subramanian',
+    salary: 2000,
+    address: {
+        city: 'Coimbatore'
+    }
+}
+displayEmployee(emp)
+.....................................................................................
+
+Simple Destructuring:
+
+function displayEmployee(employee) {
+    //de structure the object properties into local variables
+    const { id, name, salary, address: { city } } = employee
+    //print employee
+    console.log(`id ${id}`)
+    console.log(`name ${name}`)
+    console.log(`salary ${salary}`)
+    console.log(`city ${city}`)
+}
+
+//pass object as parameter
+displayEmployee({ id: 1, name: 'Subramanian', salary: 2000, address: { city: 'Coimbatore' } })
+
+let emp = {
+    id: 1,
+    name: 'Subramanian',
+    salary: 2000,
+    address: {
+        city: 'Coimbatore'
+    }
+}
+displayEmployee(emp)
+...
+
+Arg Destructuring:
+function displayEmployee({ id, name, salary, address: { city } }) {
+    console.log(`id ${id}`)
+    console.log(`name ${name}`)
+    console.log(`salary ${salary}`)
+    console.log(`city ${city}`)
+}
+
+//pass object as parameter
+displayEmployee({ id: 1, name: 'Subramanian', salary: 2000, address: { city: 'Coimbatore' } })
+
+let emp = {
+    id: 1,
+    name: 'Subramanian',
+    salary: 2000,
+    address: {
+        city: 'Coimbatore'
+    }
+}
+displayEmployee(emp)
+
+
+...
+arrow version
+......................
+
+const displayEmployee = ({ id, name, salary, address: { city } }) => {
+    console.log(`id ${id}`)
+    console.log(`name ${name}`)
+    console.log(`salary ${salary}`)
+    console.log(`city ${city}`)
+}
+..................................................................................
+			 Dynamic object population and deStructuring
+				  (Returing object)
+...................................................................................
+
+How to return object from the function
+
+function getStock() {
+    //return object
+    return {
+        id: 1,
+        symbol: 'google',
+        qty: 100,
+        price: 10000
+    }
+}
+console.log(getStock())
+
+i want to return object with dynamic values
+
+function getStock(id = 1, symbol = 'google', qty = 0, price = 0) {
+    //return object
+    return {
+        id: id,
+        symbol: symbol,
+        qty: qty,
+        price: price
+    }
+}
+console.log(getStock(100, 'Meta', 1000, 18900))
+console.log(getStock())
+
+De Structuring and dynamic values:
+.................................
+function getStock(id = 1, symbol = 'google', qty = 0, price = 0) {
+    //key:value
+    //instanceVariable:localvariable
+    //if both variable are same ; id:id => we can remove one 
+    return {
+        id,
+        symbol,
+        qty,
+        price
+    }
+}
+console.log(getStock(100, 'Meta', 1000, 18900))
+console.log(getStock())
+
+arrow version:
+const getStock = (id = 1, symbol = 'google', qty = 0, price = 0) => {
+    return {
+        id,
+        symbol,
+        qty,
+        price
+    }
+}
+console.log(getStock(100, 'Meta', 1000, 18900))
+console.log(getStock())
+
+...
+
+arrow with simplified notation:
+const getStock = (id = 1, symbol = 'google', qty = 0, price = 0) => ({
+        id,
+        symbol,
+        qty,
+        price
+})
+console.log(getStock(100, 'Meta', 1000, 18900))
+console.log(getStock())
+.....................................................................................
+				Modularity
+.....................................................................................
+In java Modularity , is presented via "Packages"
+
+Package organize the code  logically.
+
+Customer.java
+
+package com.ibm.cms
+
+public class Customer{}
+
+Java organizes code folders and files Physically.
+
+d:/javaapps/src/
+    com/ibm/cms/Customer.java
+
+What about javascript Modularity?
+
+ Javascript is file based modularity physically
+ but logically there is no such modularity at language level.
+
+collection of variable declarations and function.
+
+Once js started growing in large scale, dev struck to organize code.
+
+2000, Smart developers started thinking about how to modualrize js code.
+ 
+
+Module design patterns came.
+
+1.Namespace design pattern : 2000 : jquery
+2.AMD -Async Module Defintion : dojo
+---------------------------------------------------------
+3.CJS - Common JS =  namespace + amd:2005 on wards
+4.ES 6 Module design pattern:2012-2015  = amd + cjs
+------------------------------------------------------------
+5.System :2007 = AMD = CJS + ES 6
+6.UMD :2008 = NAMESPACE + AMD + CJS = ES 6
+
+
+.....................................................................................
+				ES 6 module design pattern
+
+How to share code? and how to link files?
+
+code:
+ variables with any literals
+ class
+ objects
+ arrays
+ functions
+
+Code sharing keywords
+
+export 
+export default
+
+linking files and import
+
+import
+......
+export :
+=> export can be used to "share many variables" from the single file - multi sharing
+when you export ? you can import things from the other files using
+  destructuring syntax.
+
+import {} from 'fileName'
+
+
+Note:
+ Web browsers do not support "es 6 module" directly.
+
+How to run modular code?
+
+Using build tools
+Using modern browser configuration
+
+Using build tools:
+.................
+webpack
+
+How to install webpack in our project?
+
+Steps:
+
+1.make sure that you have package.json file
+ if not , create package.json file
+
+npm init  --yes
+
+2.install webpack
+  npm install webpack webpack-cli --save-dev
+
+3.add webpack.config.js in the project root dir
+
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  mode:'development',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+
+4.build /bundle your code
+ open package.json
+ add entry into scripts
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc",
+    "build": "webpack --watch"
+  },
+
+5.start bundling
+  open cmd and run the following command
+npm run build
+
+> es6-apps@1.0.0 build
+> webpack
+
+asset bundle.js 5.19 KiB [emitted] (name: main)
+runtime modules 670 bytes 3 modules
+cacheable modules 758 bytes
+  ./src/index.js 146 bytes [built] [code generated]
+  ./src/mylib.js 612 bytes [built] [code generated]
+webpack 5.70.0 compiled successfully in 113 ms
+
+6.add bundle file inside index.html
+     <script src="dist/bundle.js"></script>
+
+
+
+eg:
+src/util.js
+//declare some variables
+
+// export const name = 'Subramanian'
+// export const city = 'Coimbatore'
+// export const salary = 9000
+// export const status = true
+// export const greet = () => 'hello'
+// export const skills = ['react', 'mobile']
+
+const name = 'Subramanian'
+const city = 'Coimbatore'
+const salary = 9000
+const status = true
+const greet = () => 'hello'
+const skills = ['react', 'mobile']
+
+export { name, city, salary, status, greet, skills }
+
+src/index.js
+import { name,city,status,skills,greet } from "./util";
+
+console.log(name,city)
+console.log(status)
+console.log(skills)
+console.log(greet())
+..
+src/services/user.service.js
+
+
+// export default class TodoService {
+//     constructor() {
+
+//     }
+//     //
+//     list() {
+//         return [{ id: 1, name: 'subramanian' }]
+//     }
+// }
+
+class UserService {
+    constructor() {
+
+    }
+    //
+    list() {
+        return [{ id: 1, name: 'subramanian' }]
+    }
+}
+export default UserService;
+
+src/index.js
+import  UserService  from "./services/user.service";
+
+let userService = new UserService()
+console.log(userService.list())
+
+
+
 
 
 
