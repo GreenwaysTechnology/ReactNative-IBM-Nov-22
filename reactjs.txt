@@ -667,35 +667,768 @@ rootElement.render(<App />)
 Task:
   Isloate the layout into separate folders and files 
 
+.....................................................................................
+			JSX Rules
+................................................................................
+
+JSX - Javascript and XML
+
+What is JSX?
+ JSX is dsl language to create user interfaces
+
+What is relationship with XML?
+
+ Inside JSX , we write javascript code and HTML code only not xml code.
+
+Why the term XML is used?
+
+ When we write JSX code, we need stable mark up standards.
+
+You know very well HTML has weak parser  that means 
+ <h1>hello
+when run the code , the html parser does not stop rendering hello, it never throws any error
+
+in order to avoid instability code inside jsx during compilation, JSX team adopted XML Parser rules, since XML parser has strong parser
+
+Basic XML  rules:
+
+1.every opened element must be closed
+  <h1>Hello</h1>
+  <Welcome></Welcome>
+ some elements may not have closing tag
+  <img /> : image element has no child elements : self closing. 
 
 
+import React from "react";
+import ReactDOM from "react-dom/client";
 
 
-
-
-
-
-
-
-
+const Greeting  = ()=>{
+   // return <h1>Hello 
+   return <h1>Hello</h1>
+}
+//Root Node 
+const App = () => <div>
+    <Greeting/>
+</div>
 
 const rootElement = ReactDOM.createRoot(document.getElementById('root'))
 
 rootElement.render(<App />)
 
 
+2. In xml you must have one single root element.
+  all elements must be organized under single root element.
+
+const Greeting = () => {
+    // return <h1>Hello
+    return <div>
+        <h1>IBM</h1>
+        <p>this is paragraph</p>
+    </div>
+
+}
+
+In this approach , there is problem in UI design, react forces us to have unncessary
+container elements like div
+
+React 16 had introduced a concept called "Fragements" 
+
+What is fragement?
+ It is invisble container element which will not be included in the output like.
+ Fragements are very usefull for escapping the compiler errors.
+
+There are different syntaxs to write  fragements.
+
+syntax 1
+const Greeting = () => {
+    return <React.Fragment>
+        <h1>IBM</h1>
+        <p>this is paragraph</p>
+    </React.Fragment>
+}
+
+syntax 2
+
+const Greeting = () => {
+    return <Fragment>
+        <h1>IBM</h1>
+        <p>this is paragraph</p>
+    </Fragment>
+}
+
+syntax 3
+const Greeting = () => {
+    return <>
+        <h1>IBM</h1>
+        <p>this is paragraph</p>
+    </>
+}
+
+
+3.Component names should start with Uppercase,generally would be noun.
+
+const greeting = () => {
+    return <>
+        <h1>IBM</h1>
+        <p>this is paragraph</p>
+    </>
+}
+react-dom.development.js:86 Warning: The tag <greeting> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+    at greeting
+    at div
+    at App
+
+
+				 How jsx code gets compiled?
+
+How code gets compiled?
+
+source code: jsx code
+
+function Welcome() {
+      return <h1>Welcome To React!</h1>;
+}
+	|
+     babel.js - compiler 
+|	
+|
+compiled code
+function Welcome() {
+  return React.createElement(
+    'h1',
+    null,
+    'Welcome To React!'
+  );
+}
+|
+runtime : react engine
+function Welcome() {
+  return React.createElement(
+    'h1',
+    null,
+    'Welcome To React!'
+  );
+}
+|
+//React.createElement
+function createElement(args){
+   document.createElement(args); // low level api call
+}
+....................................................................................
+...................................................................................
+				How to Style components
+.....................................................................................
+
+React applies styles via style language
+
+Web
+ - CSS
+Mobile App
+ -platform specific style
+
+How to add css to an html element?
+
+=> using class attribute  - external style
+=> using style attribute - inline
+
+HTML :
+<div class="container">
+
+</div>
+
+<div style="background-color:red">
+
+</div>
+
+css /style can be applied to the html elements in two ways
+
+1.during design pattern
+ using style or class attribute
+2.during runtime -dynamic css
+  using js 
+
+js offers style properties as object
+ all js css properties given
+
+element.style
+
+React uses this style object to style elements , which is used in react native as well
+
+//dom element using react .
+import React from "react";
+import ReactDOM from "react-dom/client";
+import './App.css'
+
+
+//style object 
+const styleobj = {
+    color: 'red',
+    backgroundColor: 'yellow',
+    border: "thick solid #0000FF"
+}
+const Heading = () => <>
+    <h1 class="App-header">Welcome to React Native</h1>
+    <h2 style={styleobj}>React</h2>
+</>
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+rootElement.render(<Heading />)
+.....................................................................................
+.........
+				How to Style components
+..............................................................................................
+
+CSS integration:
+................
+
+How to add css to an html element?
+
+=> using class attribute  - external style
+=> using style attribute - inline
+
+HTML :
+<div class="container">
+
+</div>
+
+<div style="background-color:red">
+
+</div>
+
+HTML ATTRIBUTES And JSX:
+
+ We cant /should not add html attributes directly in jsx code.
+ JSX uses certain rules for adding html attributes.
+
+ "Since JSX is closer to JavaScript than to HTML, React DOM uses "camelCase property naming convention" instead of HTML attribute names"
+
+For example, class becomes className in JSX, and tabindex becomes tabIndex.
+
+<div className="container" tabIndex>
+
+</div>
+
+List of jsx attributes:
+accept acceptCharset accessKey action allowFullScreen alt async autoComplete
+autoFocus autoPlay capture cellPadding cellSpacing challenge charSet checked
+cite classID className colSpan cols content contentEditable contextMenu controls
+controlsList coords crossOrigin data dateTime default defer dir disabled
+download draggable encType form formAction formEncType formMethod formNoValidate
+formTarget frameBorder headers height hidden high href hrefLang htmlFor
+httpEquiv icon id inputMode integrity is keyParams keyType kind label lang list
+loop low manifest marginHeight marginWidth max maxLength media mediaGroup method
+min minLength multiple muted name noValidate nonce open optimum pattern
+placeholder poster preload profile radioGroup readOnly rel required reversed
+role rowSpan rows sandbox scope scoped scrolling seamless selected shape size
+sizes span spellCheck src srcDoc srcLang srcSet start step style summary
+tabIndex target title type useMap value width wmode wrap
+
+"https://reactjs.org/docs/dom-elements.html"
+
+adding Events Handlers
+
+ <button onClick={method}></button>
+...................................................................................................................................................................................
+				  Dynamic Page - Data Binding
+..............................................................................................
+
+Types of web
+
+1.static web
+   -only html markup,hand coded.
+2.dynamic web
+   - html is created on fly with data
+
+How to add data in the component /how to bind data in the component?
+
+data can be represented in many ways.
+
+-primitives - numbers,strings,boolean
+-objects - literal objects, objects created out of class/function
+-arrays - it is also object but collection 
+
+How to add data in the component /how to bind data in the component?
+
+data can be represented in many ways.
+
+-primitives - numbers,strings,boolean
+-objects - literal objects, objects created out of class/function
+-arrays - it is also object but collection 
+
+How to bind data inside jsx?
+
+let name='subramanian'
+
+<h1>Hello {name} </h1>
+
+{} -  databinding syntax.
+
+data binding can be
+{variable}
+{expression} - {10*10} {getValue()} {emp.id}
+
+eg:
+import React from "react";
+import ReactDOM from "react-dom/client";
 
 
 
+const Greeting = () => {
+    const firstName = 'Subramanian'
+    const lastName = 'Murugan'
+    return <>
+        <h1>Hello {firstName} {lastName} </h1>
+    </>
+}
+const App = () => <div>
+    <Greeting />
+</div>
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+...................................................................................
+.....................................................................................
+			  Compoent Design Principles of React
+.....................................................................................
 
 
+Data can be declared for a component in two ways.
+
+1.data is supplied from outside the component.
+2.data is supplied within the component
+
+1.Data is supplied from outside the component.
+
+When component receives data from the outside, this pattern is called as "property pattern" / props pattern.
+
+Outside the component means what? What is outside for the component?
+
+YOu know very well , react creates components and assembles them in hierachical order(tree)
+in the tree model, the one component called as "parent" component and other components are called child component and sibiling components.
+
+outside means "Parent".
+
+    "Data is supplied from the parent compoent to child component" - Props pattern /Property pattern
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+//react stores all properties inside a single object , which is called as prop or property object 
+// function Greeting(props) {
+//     console.log(props)
+//     return <h1>{props.message} {props.name}</h1>
+// }
+// const Greeting = (props) => <h1>{props.message} {props.name}</h1>
+
+//object destructuring
+// const Greeting = props => {
+//     const { name, message } = props
+//     return <h1>{message} {name}</h1>
+// }
+const Greeting = ({ message, name }) => <h1>{message} {name}</h1>
 
 
+// parent Component
+// const App = () => {
+//     return Greeting('Subramanian')
+// }
+const App = () => {
+    // name is property / prop
+    return <>
+        <Greeting name="Subramanian" message="Hello" />
+        <Greeting name="Geetha" message="Welcome" />
+        <Greeting name="Dhivya" message="Hai" />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+			   property types
+
+1.primtives
+  string,numbers,boolean
+can be hardcoded or via variables
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const User = props => {
+    const { id, name, status, address: { city } } = props
+    return <>
+        <h1>Id {id}</h1>
+        <h1>Name {name}</h1>
+        <h1>Status {status ? "Available" : "Not Available"}</h1>
+        <h1>City {city}</h1>
+    </>
+}
 
 
+const App = () => {
+    let status = false
+    let address = {
+        city: 'Coimbatore'
+    }
+    return <>
+        <User id={1} name="Subramanian" status={status} address={address} />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+
+..............................................................................................
+			What if i dont supply Props to Component -Default Props
+.............................................................................................
+if you dont pass any property, we can supply default props which saves lot of runtime bugs.
+
+When you design component, it is highly recommended to have default Props- This is best Practice
+
+//default Args
+function multiply(a = 0, b = 0) {
+    console.log(`a ${a} b ${b}`)
+    return a * b; //NaN
+}
+console.log(multiply(6, 3))
+console.log(multiply())
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const User = props => {
+    const { id, name, status, address: { city } } = props
+    return <>
+        <h1>Id {id}</h1>
+        <h1>Name {name}</h1>
+        <h1>Status {status ? "Available" : "Not Available"}</h1>
+        <h1>City {city}</h1>
+    </>
+}
+
+//setting default properties
+User.defaultProps = {
+    id: 0,
+    name: 'Your Name',
+    status: false,
+    address: {
+        city: 'Your city '
+    }
+}
 
 
+const App = () => {
+    let status = false
+    let address = {
+        city: 'Coimbatore'
+    }
+    return <>
+        <User />
+        <User id={1} name="Subramanian" status={true} />
 
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+
+..............................................................................................
+			Property Validation or Property Constraints
+.............................................................................................
+
+Javascript is dynamic typed language, meaning that the type of variable is not verified during compile time.
+
+dyamic typed/weak typing
+
+var a=1;
+console.log(a) => 1 => type is number
+
+you can reinitalize the with different types
+a="hello"
+console.log(a) => "hello" => type is string
+
+In c: - Strongly typed  /static typed
+int a=10
+a="hello" -compile time error 
+
+Type script : Strongly static typed javascript
+
+let a:number =10;
+a="hello"
+
+
+Inside compoent if pass data , can i enforce the react that accept only the type what i want.
+
+Yes , we can do with help of property validator.
+Property validator gives only warning , it wont stop rendering incase there is any type error.
+
+
+in order to write property rule, react provides a separate lib "prop-types"
+
+npm install --save prop-types
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import PropTypes from 'prop-types'
+
+const User = ({ id, name, status, address: { city } }) => {
+    return <>
+        <h1>Id {id}</h1>
+        <h1>Name {name}</h1>
+        <h1>Status {status ? "Available" : "Not Available"}</h1>
+        <h1>City {city}</h1>
+    </>
+}
+
+//setting default properties
+User.defaultProps = {
+    id: 0,
+    name: 'Your Name',
+    status: false,
+    address: {
+        city: 'Your city '
+    }
+}
+//setting property validation rules 
+User.propTypes = {
+    id: PropTypes.number
+}
+
+
+const App = () => {
+    let status = false
+    let address = {
+        city: 'Coimbatore'
+    }
+    return <>
+        <User />
+        <User id={"1"} name="Subramanian" status={true} />
+
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+
+After running:
+react-jsx-dev-runtime.development.js:87 Warning: Failed prop type: Invalid prop `id` of type `string` supplied to `User`, expected `number`.
+    at User (http://localhost:3000/static/js/bundle.js:29:5)
+    at App
+....................................................................................
+			 class Components, props,and it features
+
+Now a days class components are moved away from the react  ecyo system- only functions
+import React from "react";
+import ReactDOM from "react-dom/client";
+import PropTypes from 'prop-types'
+
+const User_ = ({ id, name, status, address: { city } }) => {
+    return <>
+        <h1>Id {id}</h1>
+        <h1>Name {name}</h1>
+        <h1>Status {status ? "Available" : "Not Available"}</h1>
+        <h1>City {city}</h1>
+    </>
+}
+
+//class components and props 
+
+class User extends React.Component {
+    render() {
+        //in class component props are available via this.props variable
+        //props is base class variable
+        const { id, name, status, address: { city } } = this.props
+        return <>
+            <h1>Id {id}</h1>
+            <h1>Name {name}</h1>
+            <h1>Status {status ? "Available" : "Not Available"}</h1>
+            <h1>City {city}</h1>
+        </>
+    }
+}
+//setting default properties
+User.defaultProps = {
+    id: 0,
+    name: 'Your Name',
+    status: false,
+    address: {
+        city: 'Your city '
+    }
+}
+//setting property validation rules 
+User.propTypes = {
+    id: PropTypes.number
+}
+
+const App = () => {
+    let status = false
+    let address = {
+        city: 'Coimbatore'
+    }
+    return <>
+        <User />
+        {/* <User id={"1"} name="Subramanian" status={true} /> */}
+        <User id={1} name="Subramanian" status={true} />
+
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+
+.....................................................................................
+			   comments
+
+js comments
+//
+jsx comments
+{/* <User id={"1"} name="Subramanian" status={true} /> */}
+
+....................................................................................
+How to break the big UI into smaller and smaller Component and how to share data 
+			   Uni Directional Data flow model
+
+
+eg:
+ Comment <------------------------------> CommentData
+   -UserInfo 
+	|
+	<Logo/Avatar>
+        User Name
+        <Comment-Test>
+        <Comment-Data>
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+function formateDate(date) {
+    return date.toLocaleDateString()
+
+}
+
+//without breaking 
+const Comment = props => {
+    return <div className="comment">
+        <div className="userinfo">
+            {/* Segment -1 */}
+            <div className="avatar">
+                <img src={props.author.avatarUrl} alt="Author Name" />
+            </div>
+            {/* Segment 2 */}
+            <div className="username">
+                <p>{props.author.name}</p>
+            </div>
+            {/* Segment 3 */}
+            <div className="commenttext">
+                <p>{props.text}</p>
+            </div>
+            {/* Segment 4 */}
+            <div className="commentdate">
+                {formateDate(props.date)}
+            </div>
+        </div>
+    </div>
+}
+
+const App = () => {
+    //pass data to the comments:this data may come from api later 
+    const comment = {
+        date: new Date(),
+        text: 'React is awesome lib',
+        author: {
+            name: 'Subramanian',
+            avatarUrl: 'http://placekitten.com/g/64/64'
+        }
+    }
+
+    return <>
+        <Comment date={comment.date} text={comment.text} author={comment.author} />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+...................................................................................
+
+How to extract Components?
+Avatar
+UserInfo
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+function formateDate(date) {
+    return date.toLocaleDateString()
+
+}
+export const Avatar = props => {
+    return <div className="avatar">
+        <img src={props.avatarUrl} alt="Author Name" />
+    </div>
+}
+export const User = props => {
+    return <div>
+        <p>{props.name}</p>
+    </div>
+}
+
+export const UserInfo = props => {
+    return <div className="userinfo">
+        <Avatar avatarUrl={props.author.avatarUrl} />
+        <User name={props.author.name} />
+    </div>
+}
+export const CommentDetails = props => {
+    return <div>
+        <div className="commenttext">
+            <p>{props.text}</p>
+        </div>
+        <div className="commentdate">
+            {formateDate(props.date)}
+        </div>
+    </div>
+}
+//with breaking 
+export const Comment = props => {
+    return <div className="comment">
+        <div className="userinfo">
+            <UserInfo author={props.author} />
+        </div>
+        <div>
+            <CommentDetails text={props.text} date={props.date} />
+        </div>
+    </div>
+}
+
+
+export const App = () => {
+    //pass data to the comments:this data may come from api later 
+    const comment = {
+        date: new Date(),
+        text: 'React is awesome lib',
+        author: {
+            name: 'Subramanian',
+            avatarUrl: 'http://placekitten.com/g/64/64'
+        }
+    }
+
+    return <>
+        <Comment date={comment.date} text={comment.text} author={comment.author} />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
 
 
 
