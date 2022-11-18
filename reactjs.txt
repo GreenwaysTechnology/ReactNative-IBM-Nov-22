@@ -1429,6 +1429,655 @@ export const App = () => {
 const rootElement = ReactDOM.createRoot(document.getElementById('root'))
 
 rootElement.render(<App />)
+...................................................................................
+				State
+
+What is state?
+ State is another way of passing data.
+ if data is changed, we need to rerender UI
+
+State is represented inside class component by default...
+Even we can represent state inside functions as well...
+
+The state contains data specific to this component that may change over time. The state is user-defined, and it should be a plain JavaScript object.
+
+Eg:
+ Level-1  How to declare state,bind state in ui?
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+//state 
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+
+    render() {
+        console.log(this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+				Event Handling
+....................................................................................
+
+Handling events with React elements is very similar to handling events on DOM elements.
+
+Event Listeners:
+  are functions/methods are get Executed when something things on ui element
+like click,touch,tap,press..
+
+How to attach event listeners in react?
+ React events are named using camelCase , rather than lowercase.
+
+HTML and Js event handlings
+
+<button onclick="save"/>
+
+React syntax
+
+<button onClick={methodName}/>
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+//state 
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+    //listener
+    onRate = () => {
+        console.log('onRate')
+    }
+
+    render() {
+        console.log(this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+                <button onClick={this.onRate} >+</button>
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+...............................................................................
+			 How to mutate(changing) the state
+
+By mutating the state does not trigger render cycle-update ui 
+By calling render from the listener also does not trigger render cycle
+
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+    //listener
+    onRate = () => {
+        this.state.rating++
+       // console.log(this.state)
+        this.render()
+
+    }
+
+    render() {
+        console.log(this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+                <button onClick={this.onRate} >+</button>
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+...................................................................................
+			 How to trigger render cycle
+
+React offers a method called "setState".
+
+in order to understand setState, we need to learn the functional programming principle called "Pure functions and immutablity"
+...................................................................................
+                              Pure Functions
+
+Rule A:
+  If function receives input, the function returns the same input without any mutation.
+  Every Component with respect to props, are pure functions.
+
+//pure function
+//Rule 1: if function receives input,it returns the same, that function is called pure function.
+
+
+//This function is pure function 
+function getData(message) {
+    return message
+}
+console.log(getData('hello'))
+
+//impure function 
+function update(message) {
+    message = "test"
+    return message
+}
+console.log(update('something'))
+
+
+Where is this pure function is used?
+  In React Every component is pure function with subject to props.
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+//pure function : the input parameters(props) are not modified rather just we return
+//according to props every component is pure function
+const Greeting = props => {
+   // props.message = "hai"
+    return <div>
+        <h1>Message {props.message}</h1>
+    </div>
+}
+
+
+const App = () => {
+    return <>
+        <Greeting message="hello" />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+
+Rule B:
+
+ What if function receives input, need to be mutated but it should follow the pure function rule.
+
+With help of "Immutablity"
+
+What is immutable?
+
+creating new object every time when you update the object , immutablity.
+
+if the function does that , that function is called pure function.
+
+pure function must return, "immutable object".
+
+//Pure function Rule B
+
+//impure function
+function updateCustomer(customer, city) {
+    //city 
+    customer.city = city
+    return customer
+
+}
+
+let customer = {
+    id: 1,
+    name: 'Subramanian',
+    city: 'Delhi'
+}
+console.log('before update', customer)
+let result = updateCustomer(customer, 'Coimbatore')
+console.log('after update', result)
+console.log('same customer ', customer === result ? 'same' : 'different')
+..................................................................................
+				Pure and Immutable
+//Pure function Rule B
+
+//impure function
+function updateCustomer__(customer, city) {
+    //city 
+    customer.city = city
+    return customer
+}
+
+//pure function : using immutable objects 
+//immutable object , you have to create new object for any changes
+//way -1
+// function updateCustomer(customer, city) {
+//     return {
+//         id: customer.id,
+//         name: customer.name,
+//         city: city
+//     }
+// }
+// //way 2- Object.assign - clone api to clone safely of existing object
+// function updateCustomer(customer, city) {
+//     return Object.assign({}, customer, { city: city })
+// }
+
+//way 3: Using spread operator(es 7 )feature to clone the object  ... 
+//way 2- Object.assign - clone api to clone safely of existing object
+function updateCustomer(customer, city) {
+    //return { ...customer, city: city }
+    return { ...customer, city }
+
+}
+
+
+let customer = {
+    id: 1,
+    name: 'Subramanian',
+    city: 'Delhi'
+}
+console.log('before update', customer)
+....................................................................................
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+//state 
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+    //listener
+    onRate = () => {
+        //setState : pure function , mutates the state of the component in mutable way
+        //and triggers render cycle
+        // this.setState((prvState) => {
+        //     //return immutable new state object 
+        //     // return {
+        //     //     rating: prvState.rating+1
+        //     // }
+        //     // return Object.assign({}, prvState, { rating: prvState.rating + 1 })
+        //     return { ...prvState, rating: prvState.rating + 1 }
+        // })
+
+        this.setState((prvState) => ({ ...prvState, rating: prvState.rating + 1 }))
+    }
+
+    render() {
+        console.log('render', this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+                <button onClick={this.onRate} >+</button>
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+let result = updateCustomer(customer, 'Coimbatore')
+console.log('after update', result)
+console.log('same customer ', customer === result ? 'same' : 'different')
+..................................................................................
+				Arrays and immutablity
+...................................................................................
+
+
+//impure function
+//array push method modifies existing array memory address
+//push is mutable api : dont use
+// function addTodo(todos, todo) {
+//     return todos.push(todo)
+// }
+// //pure function
+// function addTodo(todos, todo) {
+//     return todos.concat(todo)
+// }
+//spread operator
+//pure function
+function addTodo(todos, todo) {
+    return [...todos,todo]
+}
+
+let todos = [{
+    title: 'Learn react',
+    done: true
+}];
+let addedTodos = addTodo(todos, { title: 'Learn Pure functions', done: false })
+console.log(todos === addedTodos ? "Same" : "Different")
+
+Array Pure functions api
+
+1.concat - add
+2.map - iterations
+3.filter - iterations with filtering
+4.reduce - iterations with filtering
+
+
+setState
+  setState(updater[, callback])
+
+updaterFunction
+(state, props) => stateChange
+  |
+stateof your app => stateChange(Immutable Object)
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+//state 
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+    //listener
+    onRate = () => {
+        //setState : pure function , mutates the state of the component in mutable way
+        //and triggers render cycle
+        // this.setState((prvState) => {
+        //     //return immutable new state object 
+        //     // return {
+        //     //     rating: prvState.rating+1
+        //     // }
+        //     // return Object.assign({}, prvState, { rating: prvState.rating + 1 })
+        //     return { ...prvState, rating: prvState.rating + 1 }
+        // })
+
+        this.setState((prvState) => ({ ...prvState, rating: prvState.rating + 1 }))
+    }
+
+    render() {
+        console.log('render', this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+                <button onClick={this.onRate} >+</button>
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+...................................................................................
+				Multi State
+...................................................................................
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+class Rating extends React.Component {
+    //state declaration
+    state = {
+        like: 0,
+        dislike: 0
+    }
+    //External listener
+    onLike = () => {
+        this.setState((prvState) => ({ ...prvState, like: prvState.like + 1 }))
+    }
+
+    render() {
+        console.log('state', this.state)
+        return <div >
+            <h1 style={style}>Rating App</h1>
+            <div>
+                <h2>Likes {this.state.like} Dislike {this.state.dislike}</h2>
+                <button onClick={this.onLike} >Like</button>
+                <button onClick={() => {
+                    this.setState((prvState) => ({ ...prvState, dislike: prvState.dislike + 1 }))
+
+                }} >Dislike</button>
+
+            </div>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+			 List Rendering
+...................................................................................
+
+Arrays are primary datastructure to hold list of items.
+
+List Rendering we can prepare many ui layouts
+
+1.List View
+  Ul li
+2.Card Layout view
+  div
+3.Grid layout
+  table tr
+
+Array iterations are done with immutable api only
+ map - pure and immutable
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { TODOS } from './mock-data/todos'
+
+const TodoList = props => {
+    console.log(props)
+    return <div>
+        <h1>Todo App </h1>
+        <ul>
+            {/* {
+                props.todos.map(todo => {
+                    return <li>{todo.title}</li>
+                })
+            } */}
+            {
+                props.todos.map(todo => <li key={todo.id}>{todo.title}</li>)
+            }
+        </ul>
+    </div>
+}
+
+const App = () => {
+    return <>
+        <TodoList todos={TODOS} />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+			Array Mutations- state and array
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+class TodoApp extends React.Component {
+    state = {
+        todos: ['learn react']
+    }
+    onSave = () => {
+        this.setState(prvState => {
+            // return {
+            //     todos : prvState.todos.concat('Learn React Native')
+            // }
+            return { ...prvState, todos: prvState.todos.concat('new Item') }
+        })
+    }
+    render() {
+        console.log('state', this.state)
+        return <div >
+            <h1>Todo App</h1>
+            <h2>Todos</h2>
+            <ul>
+                {
+                    this.state.todos.map((todo, index) => {
+                        return <li key={index}>{todo}</li>
+                    })
+                }
+            </ul>
+            <hr />
+            <button onClick={this.onSave}>Add Todo</button>
+        </div>
+    }
+}
+
+const App = () => {
+    return <>
+        <TodoApp />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+			How to remove class for state mutations
+			    How to introduce functions
+....................................................................................
+Hooks:
+ 
+What is a hook?
+ It is a function that let you use state and other react features without writing class
+ Hook abstract lot of complexity with respect class components.
+ Hook gives a clear path to write statefull components using functions itself
+...............
+
+Hooks types:
+1.built in hooks
+	react offers lot of built in hooks
+2.custom hooks
+
+State Hook 
+ To eleminate state declaration and mutation
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+const style = {
+    textAlign: 'center',
+}
+//class Compoent
+class Rating__ extends React.Component {
+    //state declaration
+    state = {
+        rating: 0
+    }
+    //listener
+    onRate = () => {
+        this.setState((prvState) => ({ ...prvState, rating: prvState.rating + 1 }))
+    }
+
+    render() {
+        console.log('render', this.state)
+        return <div >
+            <h1 style={style}>Rating App-Class Component</h1>
+            <div>
+                <h2>Rating : {this.state.rating}</h2>
+                <button onClick={this.onRate} >+</button>
+            </div>
+        </div>
+    }
+}
+
+//functional Component
+const Rating = props => {
+    //state declaration
+    const [rating, setRating] = useState(10)
+
+    //listener
+    const onRating = () => {
+        setRating((prevRating) => {
+            return prevRating + 1
+        })
+        // setRating(rating + 1)
+    }
+    return <div>
+        <h1 style={style}>Rating App- Using Hooks</h1>
+        <div>
+            <h2>Rating : {rating}</h2>
+            <button onClick={onRating}>+</button>
+        </div>
+    </div>
+}
+
+const App = () => {
+    return <>
+        <Rating />
+    </>
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById('root'))
+
+rootElement.render(<App />)
+....................................................................................
+
+
+
+
+
+
+
+
 
 
 
