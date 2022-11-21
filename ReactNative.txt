@@ -1,0 +1,687 @@
+                                             React Native
+..............................................................................................
+
+What is React Native?
+
+1.React Native is lib for building native mobile apps 
+2.React Native combines the best parts of native development with React, a best-in-class  JavaScript library for building user interfaces.
+
+Mobile App development:
+
+ Mobile apps are built using mobile platforms and os.
+
+Mobile platforms:
+1.Android
+2.Ios
+
+Mobile devices are acting front end devices, user interfaces communicates back end services.
+
+Dev:
+ 1.user interface developer/front end developer
+ 2.back end developer
+ 3.full stack developer.
+
+Front end developer who dev apps for  front devices.
+
+Devices:
+ 1.computers - desktop
+ 2.Hand held devices- Mobiles,Tabs..
+ 3.TV,Game consoles
+ 4.IOT devices- It could be any - watches,car,industrial apps,
+
+Dev generally build apps for desktops:
+  Standalone desktop apps
+  Browser based apps- javascript,html,css - react,angular,vue.....
+
+Mobile /Tab apps:
+ Dev builds apps for android platform using java , kotlin pl.
+ in iOS development, you use Swift or Objective-C.
+
+Types of mobile Apps:
+.....................
+
+1.Native Mobile
+2.Web apps
+3.Hybrid apps
+
+1.Native Mobile
+   Mobiles built by using native platform languages- java / Swift.
+2.Web apps
+   Apps built for browsers -Mobile browsers
+3.Hybrid  apps
+   built apps using javascript but it wont run inside browser, runs inside mobile using   container(WebView).
+
+
+Hybrid apps:
+
+ Application built using javascript,css,html,looks like native apps.
+
+Why Hybrid Apps?
+
+-incase native apps, we need to maintain two code base for both platform.
+
+Why not to build one single portable app for all platforms?
+
+ That is birth of hybrid apps.
+
+Hybrids apps can be built using existing web tech- js,css,html.
+Js is simple dom language, how to acess platform services such as contacts,networks,storage..
+- a lib was created -cordova , based on cordova adobe started building a framework on top of the cordova , called phoneGap.
+
+...........................................................................................
+
+How to build mobile native apps in portable way using same javascript technology without html and css?
+
+		That is birth of React Native.
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+React Native Application Architecture :
+...........................
+
+React native applications are written using react(js) core principles
+ -Components
+ -Props
+ -State
+ -Event Handling
+ -JSX
+
+           "Every react native apps are simple javascript code"
+
+ "In React Native, there is no webview concept. React native never run inside browser."
+...............................................................................
+			How react native works?
+
+
+if you want to understand react native, we need to understand the source code react native.
+
+we write code in react using jsx language.
+jsx language mixes of html code + javascript 
+
+1.UI MARK UP Code
+   -  incase of react , html is mark up
+
+UI Mark Up code for React native:
+
+React native does not use html language to build ui elements.
+React Native provides a high level ui components already written, so we can use those
+components only.Why?
+ We are building portable application either for android or ios.
+So we need generic concept for both  platforms. 
+For that React native provides a generic components for both platforms.
+
+.....................................................................................
+	   		 JSX Compilation Model
+			     (browser)
+
+                   layout.js / layout.jsx  -source code
+		       |
+		    compiler - babel.js 
+			|
+		    plain js code
+			|-----------------------Dev cycle
+	----------------------------------------- -- Excution cycles Starts
+  Runtime : React Engine  compiled code feed into react engine
+			|
+		  Excute compiled js code : function calls
+			|
+	     create virtual Object tree (in browser V-dom)
+		        |
+		    Render Engine ; will convert react object tree into js dom object tree
+			|
+		   Flush the tree into target
+			|
+	--------------------------------------------
+        |
+       v8
+     Browser			
+
+React Native Compilation:
+
+What is it? What is happening during compilation?
+
+Source code is converted into another source code - Compilation.
+Another code is platform specific code. android code or ios code.
+if i  write ui components, ui components will be converted to platform spefic components.
+javascript code will be emitted as it is-app code.
+
+
+
+2.Application logic code
+   - js code - apis,state,props......
+
+
+1.Source Code
+    written in react - UI Code and app logic
+
+2.Compiled code
+    code converted into platform specific code.
+
+			React Native Source Code
+			  (fileName.js or jsx)
+				|
+			     compiler
+				|
+		---------------------------------------------
+		|                                           |
+	  ui mark up                                  javascript code
+		|
+  compiled as platform specific code			   |
+		|                                      Not Compiled
+	-------------					   |
+	|           |                                    
+  Andorid          ios
+
+-------------------------------------------------------------------------------------
+
+Runtime Components:
+
+1.All Views(User interface) elements are executed by "Platform runtimes"
+2.All javascript code is exectued by javascript runtime.
+
+Browsers:
+ Chrome - V8
+ Edge - Chakra
+ FireFox -Spider Monkey
+
+
+Hermes is an open-source JavaScript engine optimized for React Native
+.....................................................................................
+				How to build react native apps
+
+
+There are two work flows 
+
+1.Using React native lib
+2.Using Expo framework
+
+
+1.Using React native lib
+
+React Native lib is core lib which offers core components for building native application development
+
+if you want to build professional mobile app you need lot of infrastructure.
+ UI Components
+    -Views,Text,Labels,ListViews,ScrollView,TabView...........
+
+React native core team provides all core components necessary to build mobile apps.
+
+What if i want more components which is not supported by react core team.
+
+You need to look at community or companies who provides professional mobile apps.
+
+-Community -https://reactnative.directory/
+
+
+2.Using Expo framework
+
+ Expo  is a framwork built on the top of ReactNative core lib
+
+What is expo?
+
+ Expo is a framework and a platform for universal React native applications. It is a set of tools and services built around React Native and native platforms that help you develop, build, deploy, and quickly iterate on iOS, Android, and web apps from the same JavaScript/TypeScript codebase.
+
+Expo Apps are created using 2 ways
+
+
+Managed Work flow:
+
+  With the managed workflow you only write JavaScript / TypeScript and Expo tools and services take care of everything else for you.
+
+  The managed workflow is kind of like Rails and Create React App, but for React Native.
+
+Apps are built with the managed workflow using the expo-cli, the Expo Go app on your mobile device, and our various services: push notifications, the build service, and over-the-air (OTA) updates. 
+
+Expo tries to manage as much of the complexity of building apps for you as we can, which is why we call it the managed workflow.
+
+ A developer using the managed workflow doesn't use Xcode or Android Studio, they just write JavaScript code and manage configuration for things like the app icon and splash screen through app.json.
+
+ The Expo SDK exposes an increasingly comprehensive set of APIs that give you the power to access device capabilities like the camera, biometric authentication, file system, haptics, and so on.
+
+Bare Work flow:
+
+  In the bare workflow you have full control over every aspect of the native project, and Expo tools and services are a little more limited.
+
+In the bare workflow the developer has complete control, along with the complexity that comes with that. You can use most APIs in the Expo SDK, but the build service and easy Configuration with app.json / app.config.js are not yet supported.
+
+.....................................................................................
+
+Running your React Native application in case of expo work flow:
+.................................................................
+
+1.You can run and test app inside browser itself- this is not recommended for complex apps.
+
+2.You can run inside your device directly.
+  Expo offers called expo client.
+3.You can use emulators -Andorid virtual devices or emulators.
+
+Metro Bundler:
+-Online compiler, compiles code into react native 
+....................................................................................
+				Project setup
+
+1.Using Reactive lib work flow
+
+Requirements
+
+-Windows - os
+-Android 
+
+Dependencies:
+1.Node - 14+
+2.JDK - 11
+
+Open Cmd Prompt:
+
+java --version
+java 11.0.11 2021-04-20 LTS
+Java(TM) SE Runtime Environment 18.9 (build 11.0.11+9-LTS-194)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.11+9-LTS-194, mixed mode)
+
+node --version
+v16.15.0
+
+
+Kindly follow the Official documentation for installing necessary setups
+
+1.Android studio
+2.SDK
+3.AVD Managers
+https://reactnative.dev/docs/environment-setup
+
+.....................................................................................
+
+React Native Project setup.
+
+npx react-native init ProjectName
+
+
+Note:
+ Before running npx command, if you have installed react-native cli via npm 
+for eg:
+npm install react-native-cli -g
+You have to uninstall other wise it will give some error.
+
+npm uninstall react-native-cli -g
+
+
+npx react-native init myreactnativeApp
+
+How to run app?
+cd "E:\session\IBM\2022\july\ReactNative\myreactnativeApp" && npx react-native run-android
+.....................................................................................
+			   Expo Work flow Setup
+....................................................................................
+
+
+Expo work flow:
+..............
+
+Using npm
+
+npm install expo-cli --global
+expo init myNewProject
+cd myNewProject
+expo start
+
+Using npx
+
+npx create-expo-app expoapp && cd expoapp
+.....................................................................................
+				React Native Core Components
+.....................................................................................
+
+React Native offers lot of components but some components are core components.
+
+Basic components:
+..................
+
+1.View
+2.Text
+3.Image
+4.TextInput
+5.ScrollView
+6.StyleSheet
+
+1.View:
+.......
+  The most fundamental component for building a UI, View is a container that supports layout with flexbox, style, some touch handling, and accessibility controls. View maps directly to the native view equivalent on whatever platform React Native is running on, whether that is a UIView, <div>, android.view, etc.
+
+
+import { View } from "react-native";
+
+//Root Component
+function App() {
+   return <View>
+   </View>
+}
+
+export default App;
+
+2.Text
+	
+A React component for displaying text.
+
+Text supports nesting, styling, and touch handling.
+
+
+
+import { Text, View } from "react-native";
+
+//Root Component
+function App() {
+    return <View>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+    </View>
+}
+
+export default App;
+.....................................................................................					 JSX basic Rules
+....................................................................................
+
+JSX follows XML rules for markup design.
+
+1.In XML elements must organized under one parent element/root element, if not then it will throw error, same pattern is followed in react jsx as well.
+
+Error code
+<p>hai</p>
+<p>hai</p>
+  <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+
+<div>
+<p>hai</p>
+<p>hai</p>
+</div>
+<View>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+    </View>
+
+some times i dont want container elements.
+
+React 16 onwards, it is possible to have without container elements, with help of fragements
+
+Fragements are used to avoid unncessary view/div elements.
+Fragements are invisible container component.
+
+<React.Fragement>
+
+<React.Fragment>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+    </React.Fragment>
+
+Short cut:
+
+import React,{Fragment} from "react";
+import { Text, View } from "react-native";
+
+//Root Component
+function App() {
+    return <Fragment>
+        <Text>
+            Hello,React Native
+        </Text>
+        <Text>
+            Hello,React Native
+        </Text>
+    </Fragment>
+}
+
+export default App;
+
+
+import React, { Fragment } from "react";
+import { Text, View } from "react-native";
+
+//Root Component
+// function App() {
+//     return <View>
+//         <Text>
+//             Hello,React Native
+//         </Text>
+//         <Text>
+//             Hello,React Native
+//         </Text>
+//     </View>
+// }
+const App = () => <View>
+    <Text>
+        Hello,React Native!
+    </Text>
+    <Text>
+        Hello,React Native!!
+    </Text>
+</View>
+
+export default App;
+....................................................................................
+
+....................................................................................
+			      React Native Styles
+.....................................................................................
+
+Styles:
+
+React Native applications are platform independant: if android means, android spefic styles
+should be applied, if ios means ios specific styles should be challenge.
+                                                     
+						     
+ 						      |----Android
+ Common Style language/lib/framework----|build tool---|----IOS
+
+
+CSS is style language for web -browsers.
+
+Can we use CSS language for React Native?
+
+No!.
+
+React Native uses CSS INSIDE javascript:
+
+In React
+
+css
+.box{
+  background-color :'red'
+ }
+
+Way1
+ <div className="box">
+
+way 2
+
+javascript style object
+ <div style={ {backgroundColor:'red'} } />
+
+javascript style object properties:
+https://www.w3schools.com/jsref/dom_obj_style.asp
+
+
+React Native style representation:
+
+1.StyleSheet  is object through we can create styles and can be attached to any React native
+elements.
+
+Style can be applied in twos
+
+1.inline style object
+<View>
+
+</View>
+
+2.external style object
+<View>
+
+</View>
+
+
+import { View, Text, StyleSheet } from "react-native"
+
+
+// const App = () => {
+//     // inline style 
+//     return <View style={{backgroundColor:'pink'}}>
+//         <Text>
+//             Welcome to React Native
+//         </Text>
+//     </View>
+// }
+
+//external style object 
+const styles = StyleSheet.create({
+    backgroundColor: 'yellow'
+})
+
+
+const App = () => {
+    // inline style 
+    return <View style={styles}>
+        <Text>
+            Welcome to React Native
+        </Text>
+    </View>
+}
+export default App;
+.....................................................................................
+		    Styling Indivdual Components
+....................................................................................
+
+Component is collection of userinterface elements like view,text...
+
+How to write style for View and Text separtely.
+
+const styles = StyleSheet.create({
+    container: { 
+	 backgroundColor: 'yellow'
+    }
+})
+
+eg:
+import { View, Text, StyleSheet } from "react-native"
+
+
+// const App = () => {
+//     // inline style 
+//     return <View style={{backgroundColor:'pink'}}>
+//         <Text>
+//             Welcome to React Native
+//         </Text>
+//     </View>
+// }
+
+//external style object 
+// const styles = StyleSheet.create({
+//     backgroundColor: 'yellow'
+// })
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'yellow'
+    },
+    text: {
+        fontSize: 100,
+        color: "red",
+    }
+
+})
+
+
+const App = () => {
+    // inline style 
+    return <View style={styles.container}>
+        <Text style={styles.text}>
+            Welcome to React Native
+        </Text>
+    </View>
+}
+export default App;
+.....................................................................................
+		How to simplify the code using object destructuring
+.....................................................................................
+import { View, Text, StyleSheet } from "react-native"
+
+
+// const App = () => {
+//     // inline style 
+//     return <View style={{backgroundColor:'pink'}}>
+//         <Text>
+//             Welcome to React Native
+//         </Text>
+//     </View>
+// }
+
+//external style object 
+// const styles = StyleSheet.create({
+//     backgroundColor: 'yellow'
+// })
+
+// const styles = StyleSheet.create({
+//     container: {
+//         backgroundColor: 'yellow'
+//     },
+//     text: {
+//         fontSize: 100,
+//         color: "red",
+//     }
+
+// })
+
+const { container, text } = StyleSheet.create({
+    container: {
+        backgroundColor: 'yellow'
+    },
+    text: {
+        fontSize: 100,
+        color: "blue",
+    }
+
+})
+
+
+const App = () => {
+    // inline style 
+    return <View style={container}>
+        <Text style={text}>
+            Welcome to React Native
+        </Text>
+    </View>
+}
+export default App;
+.....................................................................................
+Tasks:
+
+1. Component Composition - Layouts
+2. Props - objects,primitives
+3. Component driven design - props from parent to child and child to its child
+
+
+
+
