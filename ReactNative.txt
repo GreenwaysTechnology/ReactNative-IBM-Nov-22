@@ -681,7 +681,1161 @@ Tasks:
 1. Component Composition - Layouts
 2. Props - objects,primitives
 3. Component driven design - props from parent to child and child to its child
+.....................................................................................
+.....................................................................................
+				Style Composing
+.....................................................................................
+
+StyleSheet.compose:
+Combines two styles such that style2 will override any styles in style1. If either style is falsy, the other one is returned without allocating an array, saving allocations and maintaining reference equality for PureComponent checks
+
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+const App = () => (
+    <View style={container}>
+        <Text style={text}>React Native</Text>
+    </View>
+);
+
+export const page = StyleSheet.create({
+    //style-1
+    container: {
+        flex: 1,
+        padding: 24,
+        backgroundColor: 'yellow',
+    },
+    text: {
+        fontSize: 30,
+        color: '#000'
+    },
+});
+
+const lists = StyleSheet.create({
+    //style-2
+    listContainer: {
+        flex: 1,
+        backgroundColor: 'green',
+    },
+    listItem: {
+        fontStyle: 'italic',
+        fontWeight: 'bold'
+    },
+});
+
+//here style one will be overriden by style2
+const container = StyleSheet.compose(page.container, lists.listContainer);
+const text = StyleSheet.compose(page.text, lists.listItem);
+
+export default App;
+....................................................................................
+We can write global styles for the entire app and we can override for any where in the app.
+
+eg:
+myexpo/globalstyles
+page.js
+import { StyleSheet } from "react-native";
+
+export const page = StyleSheet.create({
+    //style-1
+    container: {
+        flex: 1,
+        padding: 24,
+        backgroundColor: 'yellow',
+    },
+    text: {
+        fontSize: 30,
+        color: '#000'
+    },
+});
+
+App.js
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { page } from './globalstyles/page';
+
+const App = () => (
+    <View style={container}>
+        <Text style={text}>React Native</Text>
+    </View>
+);
+
+const lists = StyleSheet.create({
+    //style-2
+    listContainer: {
+        flex: 1,
+       // backgroundColor: 'green',
+    },
+    listItem: {
+        fontStyle: 'italic',
+        fontWeight: 'bold'
+    },
+});
+
+//here style one will be overriden by style2
+const container = StyleSheet.compose(page.container, lists.listContainer);
+const text = StyleSheet.compose(page.text, lists.listItem);
+
+export default App;
+.....................................................................................
+
+.....................................................................................
+				StyleSheet Properties
+....................................................................................
+
+1.absoluteFill :
+
+A very common pattern is to create overlays with position absolute and zero positioning (position: 'absolute', left: 0, right: 0, top: 0, bottom: 0), so absoluteFill can be used for convenience and to reduce duplication of these repeated styles.
+
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+const App = () => (
+    <View style={styles.container}>
+        <View style={styles.box1}>
+            <Text style={styles.text}>1</Text>
+        </View>
+        <View style={styles.box2}>
+            <Text style={styles.text}>2</Text>
+        </View>
+        <View style={styles.box3}>
+            <Text style={styles.text}>3</Text>
+        </View>
+    </View>
+);
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    box1: {
+        position: 'absolute',
+        top: 40,
+        left: 40,
+        width: 100,
+        height: 100,
+        backgroundColor: 'red'
+    },
+    box2: {
+        /**
+         * ...StyleSheet.obsoluteFill to be merged with existing styles with default values.
+         * ...spread operator is used here to merge with existing object properties
+         */
+        ...StyleSheet.absoluteFill,
+        width: 100,
+        height: 100,
+        backgroundColor: 'blue'
+    },
+    box3: {
+        position: 'absolute',
+        top: 120,
+        left: 120,
+        width: 100,
+        height: 100,
+        backgroundColor: 'green'
+    },
+    text: {
+        color: '#FFF',
+        fontSize: 80
+    }
+});
+
+export default App;
+/////////////////////////////////////////////////////////////////////////////////////
+                            hairlineWidth
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+
+const App = () => (
+    <View style={styles.container}>
+        <Text style={styles.row}>React</Text>
+        <Text style={styles.row}>Native</Text>
+    </View>
+);
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 24
+    },
+    row: {
+        padding: 4,
+        borderBottomColor: "red",
+        borderBottomWidth: StyleSheet.hairlineWidth
+    }
+});
+
+export default App
+..................................................................................
+.....................................................................................
+			   Component Composition
+.....................................................................................
+
+import { React } from 'react'
+
+import { View, Text, StyleSheet } from 'react-native'
+
+const Greeter = () => <>
+    <Text>Greeter!!!</Text>
+</>
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Greeter />
+</View>
 
 
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+....................................................................................
+rootfolder
+  -greeter
+     Greeter.jsx
+import { Text } from "react-native"
 
+export const Greeter = () => <>
+    <Text>Greeter</Text>
+</>
+
+rootFolder
+  App.js
+import { React } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { Greeter } from './greeter/Greeter';
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Greeter />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+....................................................................................
+				Props -Data
+....................................................................................
+import { React } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { Greeter } from './greeter/Greeter';
+import { User } from './users/User';
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Greeter />
+    <Greeter message="Hello" name="Subramanian" />
+    <Greeter message="Hello" name="Ram" />
+    <User user={{ id: 1, name: 'Subramanian', city: 'Coimbatore' }} skills={
+        ['Java','Javascript','Devops','Cloud']
+    } />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+import { Text,View } from "react-native"
+
+export const User = props => <>
+    <Text>Id : {props.user.id}</Text>
+    <Text>Name :{props.user.name}</Text>
+    <Text>City : {props.user.city}</Text>
+    <View>
+        {
+            props.skills.map(skill => {
+                return <Text>{skill}</Text>
+            })
+        }
+
+    </View>
+</>
+//Default Props
+User.defaultProps = {
+    user: {
+        userId: 0,
+        name: 'React Native',
+        city: 'Coimbatore',
+        skills: []
+    }
+}
+.....................................................................................
+				.....................................................................................
+			  state,event handling
+.....................................................................................
+import { React, Component } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+
+
+//state 
+export class Counter extends Component {
+    state = {
+        value: 10
+    }
+    render() {
+        return <View>
+            <Text>Counter App!!</Text>
+            <Text>Value {this.state.value}</Text>
+        </View>
+    }
+}
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Counter />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+.....................................................................................					Button Component
+
+Button
+A basic button component that should render nicely on any platform. Supports a minimal level of customization.
+
+<Button
+  onPress={onPressLearnMore}
+  title="Learn More"
+  color="#841584"
+  accessibilityLabel="Learn more about this purple button"
+/>
+
+import { React, Component } from 'react'
+import { View, Text, StyleSheet, Button } from 'react-native'
+
+
+//state 
+export class Counter extends Component {
+    state = {
+        value: 10
+    }
+    onIncrement = () => {
+        this.setState((prevState) => {
+            return { ...prevState, value: prevState.value + 1 }
+        })
+    }   
+
+    render() {
+        return <View>
+            <Text>Counter App!!</Text>
+            <Text>Value {this.state.value}</Text>
+            <Button
+                onPress={this.onIncrement}
+                title="Increment"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+            />
+        </View>
+    }
+}
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Counter />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+.....................................................................................
+....................................................................................
+			    Hooks
+....................................................................................
+What is Hooks?
+  Hooks are a new addition in React 16.8. They let you use state and other React features without writing a class.
+ Hook is  a plain js function.
+
+
+Why hooks?
+
+1. Code Resue
+  if you to repeate biz logic of component , in class component is not possible
+via hooks(functions) it is possible
+
+2.Code reduction
+  to eleminate lot of boiler plate code
+
+Hook is just simple javascript function.
+which may take arg or may not.
+Which may or may not return something 	
+
+
+every hook function starts with
+  "use"+functionName ==>hook Syntax
+
+eg:
+"useState"
+"useContext"
+"useEffect"
+"useAjax"
+"useWebSocket"
+"useLayout"
+etc....
+you can create your own hooks as well.
+
+
+useState:
+.........
+const [state, setState] = useState(initialState);
+Returns a stateful value, and a function to update it.
+
+During the initial render, the returned state (state) is the same as the value passed as the first argument (initialState).
+
+The setState function is used to update the state. It accepts a new state value and enqueues a re-render of the component.
+
+Simple Hook:
+
+Hook can be primtive,object ,array.
+
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button } from 'react-native'
+
+export const Counter = props => {
+    const [counter, setCounter] = useState(10)
+
+    const onIncrement = () => {
+        setCounter(oldCounter => {
+            return oldCounter + 1
+        })
+    }
+    return <>
+        <Text>Value {counter}</Text>
+        <Button title="Increment" onPress={onIncrement} />
+    </>
+}
+
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Text>Counter App</Text>
+    <Counter />
+</View>
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+...................................................................................
+				 Dynamic props
+		        Component Driven Design principles
+
+
+As we discussed the component must be broken into smaller and smaller
+
+Component = {state + api + UI}
+ 
+The component having state and biz logic is called as "StateFull Component"
+
+Any StateFull Component should have UI code.
+
+StateLess Components are components which receives data as prop and will UI.
+When ever the compoent receives props the compoent rerenders.
+
+The Parent Component would be statefull component
+The child component would be stateless component.
+
+eg:
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button } from 'react-native'
+
+//stateFull component: Parent
+export const Counter = props => {
+    const [counter, setCounter] = useState(15)
+    const onIncrement = () => {
+        setCounter(oldCounter => {
+            return oldCounter + 1
+        })
+    }
+    return <>
+        {/* dynamic props :state as prop , function as prop */}
+        <CounterDisplay counter={counter} onIncrement={onIncrement} />
+    </>
+}
+
+//stateLess compoent: only receives props 
+export const CounterDisplay = props => {
+    const { counter, onIncrement } = props
+    return <>
+        <Text>Value {counter}</Text>
+        <Button title="Increment" onPress={onIncrement} />
+    </>
+}
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Text>Counter App</Text>
+    <Counter />
+</View>
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+....................................................................................
+			Multi Hooks,Object inside useState.
+
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button } from 'react-native'
+
+
+export const Counter = () => {
+    const [value, setValue] = useState(200)
+    const [like, setLike] = useState(100)
+    const [counter, setCounter] = useState({ value: 10 })
+
+    const onIncrement = () => {
+        setValue(previousValue => {
+            return previousValue + 1
+        })
+    }
+    const onLike = () => {
+        setLike(previousValue => {
+            return previousValue + 1
+        })
+    }
+    //object mutation
+    const onCounter = () => {
+        setCounter(oldState => {
+            return { ...oldState, value: oldState.value + 1 }
+        })
+    }
+
+    return <View>
+        <Text>Counter Value {value} Like {like}</Text>
+        <Text>Counter Object {counter.value}</Text>
+
+        <Button
+            onPress={onIncrement}
+            title="Increment"
+            color="#841584"
+            accessibilityLabel="Learn more about this purple button"
+        />
+        <View style={{ marginTop: 10 }}>
+            <Button
+                onPress={onLike}
+                title="Like"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+            />
+        </View>
+        <View style={{ marginTop: 10 }}>
+            <Button
+                onPress={onCounter}
+                title="Counter Object"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"
+            />
+        </View>
+    </View>
+
+}
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <Counter />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
+....................................................................................
+			User Input- TextInput Component
+....................................................................................
+
+A foundational component for inputting text into the app via a keyboard. Props provide configurability for several features, such as auto-correction, auto-capitalization, placeholder text, and different keyboard types, such as a numeric keypad.
+
+The most basic use case is to plop down a TextInput and subscribe to the onChangeText events to read the user input. There are also other events, such as onSubmitEditing and onFocus that can be subscribed to
+
+
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native'
+
+export const UserInput = props => {
+    //declare state to capture input values
+    const [text, setText] = useState('defaultValue')
+    //listener method takes arg called event object 
+    //event object is bridge object 
+    const onUpdate = name  => {
+        //read Text Box value and update text 
+        setText(name)
+    }
+    const onGetValue = () => {
+        Alert.alert(text)
+        setText('')
+    }
+    return <View>
+        <Text style={styles.label}>Enter Your Name</Text>
+        {/* TextInput */}
+        <TextInput style={styles.input} onChangeText={onUpdate} value={text} />
+        <Button title="GetText" onPress={onGetValue} />
+    </View>
+}
+
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <UserInput />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    label: {
+        fontSize: 25,
+        color: 'red'
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 3,
+        padding: 10
+    },
+    listItem: {
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: 'pink'
+    }
+});
+export default App;
+.....................................................................................TextInput Properties:
+
+1.defaultValue
+2.editable
+3.multiline
+4.autofocus
+5.maxlength
+6.Place Holder
+
+How to declare TextInput to Accept passwords:
+
+secureTextEntry 
+If true, the text input obscures the text entered so that sensitive text like passwords stay secure. The default value is false. Does not work with multiline={true}.
+ <TextInput style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#9a73ef"
+            returnKeyType='go'
+            secureTextEntry
+            autoCorrect={false}
+        />
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native'
+
+const UserInput = () => {
+    //state variable to capture user intput
+    const [text, setText] = useState('Greet')
+    // const update = name => {
+    //     setText(name)
+    // }
+    return <View>
+        <Text style={styles.label}>Enter Your Name</Text>
+        {/* inline listener */}
+        <TextInput multiline={true} style={styles.input} autoFocus={true} defaultValue={'default'} onChangeText={name => {
+            setText(name)
+        }} />
+        <Text style={styles.label}>Enter Your Password</Text>
+        {/* inline listener */}
+        <TextInput style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#9a73ef"
+            returnKeyType='go'
+            secureTextEntry
+            autoCorrect={false}
+        />
+        <Text style={styles.label}>Your Name is : {text}</Text>
+        {/* Inline listner */}
+        <Button title='Show Name' onPress={() => {
+            Alert.alert(text)
+        }} />
+    </View>
+}
+
+//Root Component
+const App = () => <View style={styles.container}>
+    <UserInput />
+</View>
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    label: {
+        fontSize: 25,
+        color: 'red'
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10
+    },
+    listItem: {
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: 'pink'
+    }
+});
+export default App;
+.....................................................................................
+....................................................................................
+				Design-Colors
+...................................................................................
+
+How to use colors?
+
+ -color names; red blue; which is not mostly recommended.
+ -color values ; #
+
+Color Representation:
+
+RGB
+HSL
+color int
+color strings
+
+https://reactnative.dev/docs/colors
+
+Colors API
+ React Native has several color APIs designed to allow you to take full advantage of your platform's design and user preferences.
+
+PlatformColor 
+  lets you reference the platform's color system.
+
+PlatformColor(color1, [color2, ...colorN]);
+
+ You can use the PlatformColor function to access native colors on the target platform by supplying the native color’s corresponding string value
+
+If you pass more than one string value to the PlatformColor function, it will treat the first value as the default and the rest as fallback.
+
+PlatformColor('bogusName', 'linkColor');
+
+Supported colors
+:
+For a full list of the types of system colors supported.
+
+Android:
+ R.attr - ?attr prefix
+ R.color - @android:color prefix
+
+iOS (Objective-C and Swift notations):
+UIColor Standard Colors
+UIColor UI Element Colors
+
+
+DynamicColorIOS 
+   is iOS specific and allows you to specify which colors should be used in light or Dark Mode.
+.....................................................................................
+				Platform
+
+Platform is Object , used to detect on which platform you are in, accordingly if you want to render some features like, colors.
+
+Platform class offers static properties
+constants
+	Version,Release...
+isPadiOS
+isTV
+isTesting
+OS
+Version
+
+methods:
+Platform.select(config:Object)
+
+The config parameter is an object with the following keys:
+android (any)
+ios (any)
+native (any)
+default (any)
+
+Platform.select({
+ android: ?
+ ios:?
+})
+
+select method how works?
+ select internally applies if logic to select os
+
+Platform.OS === 'platform' or a Platform.select()
+.
+import React from 'react';
+
+import {
+    Platform,
+    PlatformColor,
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
+
+
+const App = () => (
+    <View style={styles.container}>
+        <Text style={styles.label}>
+            I am a special label color!	
+        </Text>
+    </View>
+);
+
+const styles = StyleSheet.create({
+    label: {
+        padding: 16,
+        ...Platform.select({
+            ios: {
+                color: PlatformColor('label'),
+                backgroundColor:
+                    PlatformColor('systemTealColor'),
+            },
+            android: {
+                color: PlatformColor('?android:attr/textColor'),
+                backgroundColor:
+                    PlatformColor('@android:color/holo_blue_bright'),
+            },
+            default: { color: 'black' }
+        })
+    },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...Platform.select({
+            ios: {
+                color: PlatformColor('label'),
+                backgroundColor:
+                    PlatformColor('systemTealColor'),
+            },
+            android: {
+                color: PlatformColor('?android:attr/textColor'),
+                backgroundColor:
+                    PlatformColor('@android:color/holo_orange_dark'),
+            },
+            default: { color: 'black' }
+        })
+    }
+});
+
+export default App;
+....................................................................................
+.................................................................................
+			Design - Height and Width
+..................................................................................
+
+Height and Width
+ A component's height and width determine its size on the screen.
+
+Fixed Dimensions
+   The general way to set the dimensions of a component is by adding a fixed width and height to style. All dimensions in React Native are unitless, and represent density-independent pixels
+
+import React from 'react';
+import {
+    View
+} from 'react-native';
+
+const FixedDimensionsBasics = () => {
+    return (
+        <View>
+            <View style={{
+                width: 50, height: 50, backgroundColor: 'powderblue'
+            }} />
+            <View style={{
+                width: 100, height: 100, backgroundColor: 'skyblue'
+            }} />
+            <View style={{
+                width: 150, height: 150, backgroundColor: 'steelblue'
+            }} />
+        </View>
+    );
+};
+
+const App = () => <FixedDimensionsBasics />
+
+
+
+export default App;
+
+The problems in fixed width Dimensions:
+
+1.if device size changes, which will not update the ui according to screen sizes.
+.....................................................................................
+
+Flex Dimensions / Flexable Deminisions
+
+  Use flex in a component's style to have the component expand and shrink dynamically based on available space.
+
+Layouts:
+........
+-Every UI, Design starts with box, Box model.
+-Every Element/Widget/Component is a box.
+
+
+Every Box has the following properties
+
+1.width
+2.height
+
+measurements are specified using device px, in react native we dont tell units.
+
+ width: 100px / 100% -html
+
+The value of width  of an component , in general the "width of container"
+The value of height of an component ,the component height.
+
+space :
+
+Space can be allocated of an component 
+
+1.margin
+   The space allocated outside component
+2.padding
+  The space allocated inside component
+
+Faces of widget:
+................
+
+Clock wise order
+ Top---Right---bottom--left
+
+space allocation based on sides
+
+leftMargin:10
+rightMargin:10
+topMargin:10
+bottomMargin:10
+
+padding : left,right,top,bottom
+
+Allocate 10px padding and margin equally in all sides
+
+padding : 10
+margin :10
+
+Layout types in css/Web:
+
+1.box layout - height,width,float,alignments
+2.grid layout
+3.flex box
+
+Flex Box:
+
+What is flex box / flex?
+
+The flex box is specification introduced in css  to build responsive web application alternate to grid layout.
+
+flexbox is one dimensional layout model, where as gird layout is two dimensional layout.
+
+Any layout is box based design
+
+layout is rendered as row-column coimbation : two dimensional layout
+     "Grid"
+
+layout is rendered either row or column direction ; one dimensional layout 
+     "Flex"
+
+
+Flex box basics:
+
+Axes of Flex:
+ There are two types of axes
+
+1.Main axis
+2.Cross axis
+
+How to activate the flex layout?
+
+ Flex layout is already activated in side every react native elements.
+
+we can override flex property
+eg:
+
+flex : 1 
+
+flex will define how your items are going to “fill” over the available space along your main axis. Space will be divided according to each element's flex property.
+
+The main axis is defined by "flex-direction" which has four values
+
+ row
+ row-reverse
+ column
+ column-reverse
+
+ flexDirection: row | column | row-reverse | column-reverse
+
+https://medium.com/wix-engineering/the-full-react-native-layout-cheat-sheet-a4147802405c
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
+
+https://yogalayout.com/docs
+
+
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+
+export default class FlexDirectionBasics extends Component {
+  render() {
+    return (
+      // Try setting `flexDirection` to 'column'/'column-reverse'/'row'/'row-reverse'
+      <View style={styles.container}>
+        <Text style={styles.headerStyle}>flexDirection: 'row-reverse'</Text>
+        <View style={[{flexDirection:'column-reverse'}, styles.elementsContainer]}>
+          <View style={{width: 50, height: 50, backgroundColor: '#EE2C38'}} />
+          <View style={{width: 50, height: 50, backgroundColor: '#FAA030'}} />
+          <View style={{width: 50, height: 50, backgroundColor: '#32B76C'}} />
+        </View>
+      </View>
+    );
+  }
+}
+
+const styles = {
+  container: {
+    marginTop: 48,
+    flex: 1
+  },
+  headerStyle: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '100',
+    marginBottom: 24
+  },
+  elementsContainer: {
+    flex: 1,
+    backgroundColor: '#ecf5fd',
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 24
+  }
+}
+.....................................................................................
+			 Mobile App Layouts
+.....................................................................................
+
+Mobile Apps are mostly based on layoutting model is called "ListView"
+
+View Types:
+
+1.View 
+   Container View which contains other views and components
+   It does not Scrollable
+2.ScrollView
+3.FlatList
+
+import { StatusBar } from 'expo-status-bar';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Greeter } from './greeter/greeter';
+
+
+export default function App() {
+    return (
+        <View style={styles.container}>
+            <ScrollView>
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+                <Greeter title="Welcome to React Native!!" />
+            </ScrollView>
+            <StatusBar style="auto" />
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+....................................................................................
