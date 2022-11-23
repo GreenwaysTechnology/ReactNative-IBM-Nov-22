@@ -1839,3 +1839,1025 @@ const styles = StyleSheet.create({
     },
 });
 ....................................................................................
+			 FlatList
+
+.....................................................................................
+				FlatList and SectionList
+.....................................................................................
+
+
+FlatList: 
+
+To render list along with scrollbar.
+
+<ScrollView> vs <FlatList> - which one to use?
+
+ScrollView renders all its react child components at once, but this has a performance downside.
+
+Imagine you have a very long list of items you want to display, maybe several screens worth of content. Creating JS components and native views for everything all at once, much of which may not even be shown, will contribute to slow rendering and increased memory usage.
+
+This is where FlatList comes into play. FlatList renders items lazily, when they are about to appear, and removes items that scroll way off screen to save memory and processing time.
+
+FlatList is also handy if you want to render separators between your items, multiple columns, infinite scroll loading, or any number of other features it supports out of the box.
+
+Fully cross-platform.
+Optional horizontal mode.
+Configurable viewability callbacks.
+Header support.
+Footer support.
+Separator support.
+Pull to Refresh.
+Scroll loading.
+ScrollToIndex support.
+Multiple column support.
+
+Syntax:
+const users = [{id:1,name:'a'}]
+
+<FlatList 
+         keyExtractor={(item)=>item.id} 
+         data={users}
+         renderItem={({item}) => (
+            <Text style={styles.item}>{item.name}</Text>
+)} />
+
+keyExtractor:
+	which is eq key prop in react.
+(item: object, index: number) => string;
+
+Used to extract a unique key for a given item at the specified index. Key is used for caching and as the react key to track item re-ordering. The default extractor checks item.key, then item.id, and then falls back to using the index, like React does.
+
+eg:  
+  users.map(user=>{
+     return <li key={user.id}>
+	
+   </li>
+  })
+
+data:
+  which binds array as data source
+
+renderItem : {renderItemFunction}
+
+renderItemFunction(item:Object,index:number,separators:Object){
+	
+}
+
+  <FlatList
+            data={messageList}
+            renderItem={
+                (obj) => {
+                    console.log(obj)
+                    return <Text>something</Text>
+                }
+            }
+        />
+
+output:
+Object {
+  "index": 0,
+  "item": Object {
+    "id": 1,
+    "message": "hello",
+  },
+  "separators": Object {
+    "highlight": [Function highlight],
+    "unhighlight": [Function unhighlight],
+    "updateProps": [Function updateProps],
+  },
+}
+renderItem function returns one single object which has three keys
+
+1.index
+2.item
+3.separators
+
+ <FlatList
+            data={messageList}
+            renderItem={
+                (obj) => {
+                    console.log(obj)
+                    return <Text>{obj.item.message}</Text>
+                }
+            }
+        />
+        <FlatList
+            data={messageList}
+            renderItem={
+                ({ item, index, separators }) => {
+                    console.log(item, index, separators)
+                    return <Text>{item.message}</Text>
+                }
+            }
+        />
+        <FlatList
+            data={messageList}
+            renderItem={
+                ({ item, index, separators }) => {
+                    console.log(item, index, separators)
+                    const { message } = item
+                    return <Text>{message}</Text>
+                }
+            }
+        />
+.....................................................................................import React, { Component } from 'react';
+import { View, Text, FlatList } from 'react-native';
+
+
+const messageList = [{
+    id: 1,
+    message: 'hello'
+},
+{
+    id: 2,
+    message: 'hai'
+},
+{
+    id: 3,
+    message: 'welcome'
+},
+{
+    id: 4,
+    message: 'greet'
+}
+
+]
+
+const App = () => {
+    // Try setting `flexDirection` to 'column'/'column-reverse'/'row'/'row-reverse'
+    return <View style={styles.container}>
+        <Text style={styles.headerStyle}>ListView</Text>
+         {/* <FlatList
+            data={messageList}
+            renderItem={
+                (obj) => {
+                    console.log(obj)
+                    return <Text>{obj.item.message}</Text>
+                }
+            }
+        /> */}
+        {/* <FlatList
+            data={messageList}
+            renderItem={
+                ({ item, index, separators }) => {
+                    console.log(item, index, separators)
+                    return <Text>{item.message}</Text>
+                }
+            }
+        /> */}
+        <FlatList
+            keyExtractor={(message) => {
+                console.log('keyExtractor', message)
+                return message.id
+            }}
+            data={messageList}
+            renderItem={
+                ({ item, index, separators }) => {
+                    console.log(item, index, separators)
+                    const { message } = item
+                    return <Text>{message}</Text>
+                }
+            }
+        /> 
+    </View>
+}
+
+const styles = {
+    container: {
+        marginTop: 48,
+        backgroundColor: 'pink',
+        flex: 1
+    },
+    headerStyle: {
+        fontSize: 24,
+        fontWeight: 'bolder',
+        textAlign: 'center',
+        marginBottom: 24
+    },
+    elementsContainer: {
+        flex: 1,
+        paddingLeft: 10,
+        paddingTop: 10,
+        backgroundColor: '#ecf5fd',
+        marginLeft: 24,
+        marginRight: 24,
+        marginBottom: 24
+    }
+}
+
+export default App;
+....................................................................................
+Todo items with FlatList
+
+
+import React from 'react';
+import { View, Text, FlatList } from 'react-native';
+import { TODOS } from './mock-data/todos'
+
+
+const App = () => {
+    return <View style={styles.container}>
+        <Text style={styles.headerStyle}>Todo List</Text>
+        <FlatList
+            keyExtractor={(todo) => {
+                return todo.id
+            }}
+            data={TODOS}
+            renderItem={
+                ({ item, index, separators }) => {
+                    console.log(item, index, separators)
+                    const { title } = item
+                    return <Text>{title}</Text>
+                }
+            }
+        />
+    </View>
+}
+
+const styles = {
+    container: {
+        marginTop: 48,
+        backgroundColor: 'pink',
+        flex: 1
+    },
+    headerStyle: {
+        fontSize: 24,
+        fontWeight: 'bolder',
+        textAlign: 'center',
+        marginBottom: 24
+    },
+    elementsContainer: {
+        flex: 1,
+        paddingLeft: 10,
+        paddingTop: 10,
+        backgroundColor: '#ecf5fd',
+        marginLeft: 24,
+        marginRight: 24,
+        marginBottom: 24
+    }
+}
+
+export default App;
+....................................................................................
+			Web Service Integration
+....................................................................................
+
+How to talk rest apis/end points/webservices?
+ Javascript provides an api called XMLHTTPRequest called ajax object.
+
+XHR is very low level api used for api communications.
+Now a days we have frameworks/libs built on the top xhr.
+
+Popular libs:
+1.fetch - from google
+2.axios - third party community
+etc...
+
+
+When to make api calls in Ui apps.
+
+1.during inital render
+  when you lanuch app, you need to load data ,that time we need to talk to api
+2.after user interaction
+  when you submit a form,you press some item, when you press a menu...
+
+1.during inital render
+  when you lanuch app, you need to load data ,that time we need to talk to api
+
+Component Life Cycles:
+......................
+
+Every Component has three life cycle phase.
+Each Phase has different apis
+
+Phases
+1.mount
+   This phase is a inital phase
+
+constructor - not used widely even in class components
+2.render :
+   render is method used to prepare inital "virtual object tree"
+after render completes,
+  React engine will insert virtual object tree into platforms(browser / mobile)
+
+3.componentDidMount is called
+   Inside componentDidMount we are going to perform most expensive operations
+eg:
+  ajax/api calls
+  Timers
+  Websocket calls
+
+2.update
+3.unmount
+
+import React from 'react';
+import { View, Text } from 'react-native';
+
+
+class UserList extends React.Component {
+    constructor() {
+        super()
+        console.log('UserList - Constructor is called')
+    }
+    render() {
+        console.log('UserList - render is called')
+        return <>
+            <Text>User List</Text>
+            <UserDetails/>
+        </>
+    }
+    componentDidMount() {
+        console.log('UserList - ComponentDidMount')
+    }
+}
+
+class UserDetails extends React.Component {
+    constructor() {
+        super()
+        console.log('UserDetails - Constructor is called')
+    }
+    render() {
+        console.log('UserDetails - render is called')
+        return <>
+            <Text>User Details</Text>
+        </>
+    }
+    componentDidMount() {
+        console.log('UserDetails - ComponentDidMount')
+    }
+}
+
+
+const App = () => {
+    return <View style={styles.container}>
+        <Text style={styles.headerStyle}>Component Life Cycle</Text>
+        <UserList />
+    </View>
+}
+
+const styles = {
+    container: {
+        marginTop: 48,
+        backgroundColor: 'pink',
+        flex: 1
+    },
+
+}
+
+export default App;
+.....................................................................................
+
+API call
+Conditional Rendering
+ActivityIndicator
+Item Selection
+
+import React from 'react';
+import { View, Text, ActivityIndicator, FlatList, StyleSheet, StatusBar, Alert } from 'react-native';
+
+
+class Todos extends React.Component {
+
+    state = {
+        error: null,
+        isLoaded: false, //progress bar / spinner 
+        items: [] //data
+    }
+
+    onSelectItem = item => {
+        Alert.alert(JSON.stringify(item))
+    }
+    render() {
+        const { error, isLoaded, items } = this.state
+        //conditional rendering
+        if (error) {
+            return <View>
+                <Text>Error : {error.message}</Text>
+            </View>
+        } else if (!isLoaded) {
+            //show spinner 
+            return <ActivityIndicator size="large" color="#0000ff" />
+        } else {
+            return <FlatList
+                keyExtractor={(todo) => {
+                    return todo.id
+                }}
+                data={items}
+                renderItem={
+                    ({ item }) => {
+                        const { title } = item
+                        return <View style={styles.item}>
+                            <Text onPress={() => { this.onSelectItem(item) }} style={styles.title}>{title}</Text>
+                        </View>
+                    }
+                }
+            />
+        }
+
+    }
+    componentDidMount() {
+        setTimeout(() => {
+            const url = 'https://jsonplaceholder.typicode.com/todos'
+            fetch(url)
+                .then(res => res.json())
+                .then(todos => {
+                    // console.log(todos)
+                    this.setState({
+                        isLoaded: true,
+                        items: todos
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    this.setState({
+                        isLoaded: true,
+                        error: err
+                    })
+                })
+        }, 100)
+    }
+}
+
+
+const App = () => {
+    return <View style={styles.container}>
+        <Todos />
+    </View>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+});
+
+export default App;
+.....................................................................................
+			 Functional Components
+
+How to handle life cycle apis in functional components?
+ hooks
+componentDidMount -- useEffect(()=>{})
+
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, FlatList, StyleSheet, StatusBar, Alert } from 'react-native';
+
+export const Todos = props => {
+    const [state, setState] = useState({
+        error: null,
+        isLoaded: false, //progress bar / spinner 
+        items: [] //data
+    })
+    const onSelectItem = item => {
+        Alert.alert(JSON.stringify(item))
+    }
+    
+    useEffect(() => {
+        setTimeout(() => {
+            const url = 'https://jsonplaceholder.typicode.com/todos'
+            fetch(url)
+                .then(res => res.json())
+                .then(todos => {
+                    // console.log(todos)
+                    setState({
+                        isLoaded: true,
+                        items: todos
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    setState({
+                        isLoaded: true,
+                        error: err
+                    })
+                })
+        }, 100)
+    })
+    const { error, isLoaded, items } = state
+    //conditional rendering
+    if (error) {
+        return <View>
+            <Text>Error : {error.message}</Text>
+        </View>
+    } else if (!isLoaded) {
+        //show spinner 
+        return <ActivityIndicator size="large" color="#0000ff" />
+    } else {
+        return <FlatList
+            keyExtractor={(todo) => {
+                return todo.id
+            }}
+            data={items}
+            renderItem={
+                ({ item }) => {
+                    const { title } = item
+                    return <View style={styles.item}>
+                        <Text onPress={() => { onSelectItem(item) }} style={styles.title}>{title}</Text>
+                    </View>
+                }
+            }
+        />
+    }
+
+}
+
+const App = () => {
+    return <View style={styles.container}>
+        <Todos />
+    </View>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+});
+
+export default App;
+...................................................................................
+				Handling Touch Features in Mobile:
+.....................................................................................
+
+
+Handling Touch Features in Mobile:
+...................................
+Users interact with mobile apps mainly through touch. They can use a combination of gestures, such as tapping on a button, scrolling a list, or zooming on a map. React Native provides components to handle all sorts of common gestures, as well as a comprehensive gesture responder system to allow for more advanced gesture recognition, but the one component you will most likely be interested in is the basic Button.
+
+
+Touchable Components:
+.....................
+
+If the basic button doesn't look right for your app, you can build your own button using any of the "Touchable" components provided by React Native. The "Touchable" components provide the capability to capture tapping gestures, and can display feedback when a gesture is recognized. These components do not provide any default styling
+
+TouchableHighlight:
+
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, Button, TouchableHighlight, View, Alert } from 'react-native';
+
+function App() {
+    return (
+        <View style={styles.container}>
+            <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" onPress={() => Alert.alert('Pressed')}>
+                <Button style={{ backgroundColor: '#fff',fontSize:50 }} title="Touch Me"/>
+            </TouchableHighlight>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#000',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+export default App;
+////////////////////////////////////////////////////////////////////////////////////
+			Component as Prop
+...................................................................................
+
+<TouchableHighlight>
+   <Button/>
+</TouchableHighlight>	
+<View>
+  ?
+</View>		
+
+<MyComponent/>  - the component does not take any child elements
+...................................................................................
+import { StyleSheet, Text, Image, View } from 'react-native';
+
+const Header = props => {
+    //  Component as prop
+    return <View>
+        {props.children}
+    </View>
+}
+const Logo = props => {
+    return <Image style={styles.img} source={{uri:'https://reactnative.dev/img/tiny_logo.png'}} />
+}
+
+const MyText = props => <Text>{props.title}</Text>
+
+function App() {
+    return (
+        <View style={styles.container}>
+            <Header>
+                <MyText title="Hello" />
+                <Logo/>
+            </Header>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#ffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    img: {
+        width:50,
+        height:50
+    }
+});
+
+export default App;
+.....................................................................................
+				Status Bar
+....................................................................................
+StatusBar
+Component to control the app's status bar. The status bar is the zone, typically at the top of the screen, that displays the current time, Wi-Fi and cellular network information, battery level and/or other status icons.
+
+ <StatusBar
+        animated={true}
+        backgroundColor="#61dafb"
+        barStyle={statusBarStyle}
+        showHideTransition={statusBarTransition}
+        hidden={hidden} />
+
+import React, { useState } from 'react';
+import { Button, Platform, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+
+const STYLES = ['default', 'dark-content', 'light-content'];
+const TRANSITIONS = ['fade', 'slide', 'none'];
+
+const App = () => {
+    const [hidden, setHidden] = useState(false);
+    const [statusBarStyle, setStatusBarStyle] = useState(STYLES[2]);
+    const [statusBarTransition, setStatusBarTransition] = useState(TRANSITIONS[1]);
+
+    const changeStatusBarVisibility = () => setHidden(!hidden);
+
+    const changeStatusBarStyle = () => {
+        const styleId = STYLES.indexOf(statusBarStyle) + 1;
+        if (styleId === STYLES.length) {
+            setStatusBarStyle(STYLES[0]);
+        } else {
+            setStatusBarStyle(STYLES[styleId]);
+        }
+    };
+
+    const changeStatusBarTransition = () => {
+        const transition = TRANSITIONS.indexOf(statusBarTransition) + 1;
+        if (transition === TRANSITIONS.length) {
+            setStatusBarTransition(TRANSITIONS[0]);
+        } else {
+            setStatusBarTransition(TRANSITIONS[transition]);
+        }
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar
+                animated={true}
+                backgroundColor="#61dafb"
+                barStyle={statusBarStyle}
+                showHideTransition={statusBarTransition}
+                hidden={hidden} />
+            <Text style={styles.textStyle}>
+                StatusBar Visibility:{'\n'}
+                {hidden ? 'Hidden' : 'Visible'}
+            </Text>
+            <Text style={styles.textStyle}>
+                StatusBar Style:{'\n'}
+                {statusBarStyle}
+            </Text>
+            {Platform.OS === 'ios' ? (
+                <Text style={styles.textStyle}>
+                    StatusBar Transition:{'\n'}
+                    {statusBarTransition}
+                </Text>
+            ) : null}
+            <View style={styles.buttonsContainer}>
+                <Button
+                    title="Toggle StatusBar"
+                    onPress={changeStatusBarVisibility} />
+                <Button
+                    title="Change StatusBar Style"
+                    onPress={changeStatusBarStyle} />
+                {Platform.OS === 'ios' ? (
+                    <Button
+                        title="Change StatusBar Transition"
+                        onPress={changeStatusBarTransition} />
+                ) : null}
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#ECF0F1'
+    },
+    buttonsContainer: {
+        padding: 10
+    },
+    textStyle: {
+        textAlign: 'center',
+        marginBottom: 8
+    }
+});
+
+export default App;
+
+
+....................................................................................
+				Switch Component
+
+in order to toggle , enable and disable features.
+
+import React from 'react';
+import { View, Button, Text, ScrollView, StyleSheet, StatusBar, Switch } from 'react-native'
+
+let id = 0
+
+const styles = StyleSheet.create({
+    todoContainer: {
+        marginTop: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    appContainer: {
+        paddingTop: 10,
+        marginTop: 20,
+
+    },
+    // Let container (ScrollView (todo container) & View (app container)) fills up all possible space
+    fill: {
+        flex: 1,
+    }
+})
+
+export const Todo = props => (
+    <View style={styles.todoContainer}>
+        <Switch value={props.todo.checked} onValueChange={props.onToggle} />
+        <Button onPress={props.onDelete} title="delete" />
+        <Text>{props.todo.text}</Text>
+    </View>
+)
+class App extends React.Component {
+    state = {
+        todos: [],
+    }
+    addTodo() {
+        id++
+        const text = `TODO number ${id}`
+        this.setState({
+            todos: [
+                ...this.state.todos,
+                { id: id, text: text, checked: false },
+            ],
+        })
+    }
+
+    removeTodo(id) {
+        this.setState({
+            todos: this.state.todos.filter(todo => todo.id !== id)
+        })
+    }
+
+    toggleTodo(id) {
+        this.setState({
+            todos: this.state.todos.map(todo => {
+                if (todo.id !== id) return todo
+                return {
+                    id: todo.id,
+                    text: todo.text,
+                    checked: !todo.checked,
+                }
+            })
+        })
+    }
+
+    render() {
+        return (
+            <View style={[styles.appContainer, styles.fill]}>
+                <StatusBar
+                    animated={true}
+                    backgroundColor="#61dafb"
+                    barStyle={"default"}
+                    showHideTransition={"fade"}
+                    hidden={false} />
+                <Text>Todo count: {this.state.todos.length}</Text>
+                <Text>Unchecked todo count: {this.state.todos.filter(todo => !todo.checked).length}</Text>
+                <Button onPress={() => this.addTodo()} title="Add TODO" />
+                <ScrollView style={styles.fill}>
+                    {this.state.todos.map(todo => (
+                        <Todo
+                            onToggle={() => this.toggleTodo(todo.id)}
+                            onDelete={() => this.removeTodo(todo.id)}
+                            todo={todo}
+                        />
+                    ))}
+                </ScrollView>
+            </View>
+        )
+    }
+}
+
+export default App;
+...................................................................................
+.....................................................................................
+				ImageBackground
+
+A common feature request from developers familiar with the web is background-image. To handle this use case, you can use the <ImageBackground> component, which has the same props as <Image>, and add whatever children to it you would like to layer on top of it.
+
+import React from "react";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
+
+const image = { uri: "https://reactjs.org/logo-og.png" };
+
+const App = () => (
+  <View style={styles.container}>
+    <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <Text style={styles.text}>Inside</Text>
+    </ImageBackground>
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  text: {
+    color: "white",
+    fontSize: 42,
+    lineHeight: 84,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "#000000c0"
+  }
+});
+
+export default App;
+....................................................................................
+import React, { useState } from "react";
+import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+
+const App = () => {
+    const [modalVisible, setModalVisible] = useState(false);
+    return (
+        <View style={styles.centeredView}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            <Pressable
+                style={[styles.button, styles.buttonOpen]}
+                onPress={() => setModalVisible(true)}
+            >
+                <Text style={styles.textStyle}>Show Modal</Text>
+            </Pressable>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonOpen: {
+        backgroundColor: "#F194FF",
+    },
+    buttonClose: {
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    }
+});
+
+export default App;
+.....................................................................................
+Navigation
+ Page
+ Drawer
+ Tab
+Device Features
+  expo components
+camera
+contacts
+network
+etc...
+State Management- Redux
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
