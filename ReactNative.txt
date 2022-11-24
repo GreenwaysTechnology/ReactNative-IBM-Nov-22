@@ -2816,37 +2816,1809 @@ contacts
 network
 etc...
 State Management- Redux
+....................................................................................
+			   React Native navigation
+
+				App Arch with Navigation
+
+<App>
+  <NavigationContainer>
+
+  </NavigationContainer>
+</App>
+
+Navigation Objects:
+...................
+1.NavigationContainer
+
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Image } from 'react-native';
+
+export const Home = props => {
+    return <View>
+        <Text>Home</Text>
+    </View>
+}
+
+
+const App = () => {
+    return <View style={styles.container}>
+        <NavigationContainer>
+            {/* Here You have render Menu */}
+            <Home/>
+        </NavigationContainer>
+    </View>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+....................................................................................
+Rendering Screen: HomeScreen
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View } from 'react-native';
+
+export const HomeScreen = props => {
+    return <View style={styles.container}>
+        <Text>Home Screen</Text>
+    </View>
+}
+
+//create Object By calling createNativeStackNavigator function 
+const Stack = createNativeStackNavigator()
+console.log(Stack)
+
+const App = () => {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+
+..................................................................................
+
+....................................................................................
+			   How to move between screens
+..................................................................................
+
+Navigating to a new screen​
+
+Every Component receives information from the parent component as a prop.
+When component is rendered via route,React Navigator injects an object called "Navigation" Object as prop to every Component
+
+
+Props;
+Object {
+  "navigation": Object {
+    "addListener": [Function addListener],
+    "canGoBack": [Function canGoBack],
+    "dispatch": [Function dispatch],
+    "getId": [Function getId],
+    "getParent": [Function getParent],
+    "getState": [Function anonymous],
+    "goBack": [Function anonymous],
+    "isFocused": [Function isFocused],
+    "navigate": [Function anonymous],
+    "pop": [Function anonymous],
+    "popToTop": [Function anonymous],
+    "push": [Function anonymous],
+    "removeListener": [Function removeListener],
+    "replace": [Function anonymous],
+    "reset": [Function anonymous],
+    "setOptions": [Function setOptions],
+    "setParams": [Function anonymous],
+  },
+  "route": Object {
+    "key": "Home-V-z_dGCJfqcHgNXxzxRGK",
+    "name": "Home",
+    "params": undefined,
+  },
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    console.log('home', props)
+    const { navigation } = props;
+    const moveToScreen = () => {
+       // props.navigation.navigate('Details')
+       navigation.navigate('Details')
+    }
+    return <View style={styles.container}>
+        <Text>Home Screen</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+export const DetailsScreen = props => {
+    return <View style={styles.container}>
+        <Text>Details Screen</Text>
+    </View>
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator>
+            {/* Routes  name of the route is represented by name */}
+            <Screen name="Home" component={HomeScreen} />
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+
+
+navigation - the navigation prop is passed in to every screen component (definition) in the native stack navigator 
+
+navigate('Details') - we call the navigate function (on the navigation prop — naming is hard!) with the name of the route that we'd like to move the user to.
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+export const HomeScreen = props => {
+    console.log('home', props)
+    const { navigation } = props;
+    const moveToScreen = () => {
+        // props.navigation.navigate('Details')
+        navigation.navigate('Details')
+    }
+    return <View style={styles.container}>
+        <Text>Home Screen</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+
+export const DetailsScreen = props => {
+    console.log('home', props)
+    const { navigation } = props;
+    const moveToScreen = () => {
+        // props.navigation.navigate('Details')
+        navigation.navigate('Greeter')
+    }
+    return <View style={styles.container}>
+        <Text>Home Screen</Text>
+        <Button title="Greeter" onPress={moveToScreen} />
+    </View>
+}
+
+const GreeterScreen = props => <Text>Greeter</Text>
+//create Object By calling createNativeStackNavigator function 
+const Stack = createNativeStackNavigator()
+console.log(Stack)
+
+const App = () => {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Details" component={DetailsScreen} />
+            <Stack.Screen name="Greeter" component={GreeterScreen} />
+
+        </Stack.Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+.....................................................................................
+				Use Case
+
+Show Home Screen
+  --->TodosScreen - AJAX To fetch data from the end point
+        -DetailsScreen--> Current Todo.
+
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, FlatList, StyleSheet, StatusBar, Alert } from 'react-native';
+
+export const Todos = props => {
+    const [state, setState] = useState({
+        error: null,
+        isLoaded: false, //progress bar / spinner 
+        items: [] //data
+    })
+    const onSelectItem = item => {
+        Alert.alert(JSON.stringify(item))
+    }
+    
+    useEffect(() => {
+        setTimeout(() => {
+            const url = 'https://jsonplaceholder.typicode.com/todos'
+            fetch(url)
+                .then(res => res.json())
+                .then(todos => {
+                    // console.log(todos)
+                    setState({
+                        isLoaded: true,
+                        items: todos
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    setState({
+                        isLoaded: true,
+                        error: err
+                    })
+                })
+        }, 1000)
+    })
+    const { error, isLoaded, items } = state
+    //conditional rendering
+    if (error) {
+        return <View>
+            <Text>Error : {error.message}</Text>
+        </View>
+    } else if (!isLoaded) {
+        //show spinner 
+        return <ActivityIndicator size="large" color="#0000ff" />
+    } else {
+        return <FlatList
+            keyExtractor={(todo) => {
+                return todo.id
+            }}
+            data={items}
+            renderItem={
+                ({ item }) => {
+                    const { title } = item
+                    return <View style={styles.item}>
+                        <Text onPress={() => { onSelectItem(item) }} style={styles.title}>{title}</Text>
+                    </View>
+                }
+            }
+        />
+    }
+
+}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+});
+
+.....................................................................................
+			    Moving Screens from back to forth
+.....................................................................................
+
+There are two ways
+1.Using back button as part of status bar.
+2.Using code
+  navigation.goBack()
+  or
+  navigation.navigate('screen')
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    console.log('home', props)
+    const { navigation } = props;
+    const moveToScreen = () => {
+       // props.navigation.navigate('Details')
+       navigation.navigate('Details')
+    }
+    return <View style={styles.container}>
+        <Text>Home Screen</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+export const DetailsScreen = props => {
+    const {navigation} = props;
+    return <View style={styles.container}>
+        <Text>Details Screen</Text>
+        <Button title="Go Back" onPress={()=>{
+            navigation.goBack();
+        }} />
+    <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+
+    </View>
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator>
+            {/* Routes  name of the route is represented by name */}
+            <Screen name="Home" component={HomeScreen} />
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+
+Router Properties: Screen Props:
+...............................
+
+Specifying options:
+..................
+Each screen in the navigator can specify some options for the navigator, such as the title to render in the header. These options can be passed in the options prop for each screen component:
+
+<Stack.Screen
+  name="Home"
+  component={HomeScreen}
+  options={{ title: 'Welcome to Start Token' }}
+/>
+..................................................................................
+..................................................................................
+			How to pass data to the Compoent via Props
+
+Passing additional props#
+.........................
+
+Sometimes we might want to pass additional props to a screen.
+
+We can do that with 2 approaches:
+
+1.Use React context and wrap the navigator with a context provider to pass data to the screens (recommended).
+
+2.Use a render callback for the screen instead of specifying a component prop:
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    const { navigation } = props;
+    const moveToScreen = () => {
+        navigation.navigate('Details')
+    }
+    return <View style={styles.container}>
+        <Text>{props.title}</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+HomeScreen.defaultProps = {
+    title: 'Your Bank'
+}
+
+export const DetailsScreen = props => {
+    const { navigation } = props;
+    return <View style={styles.container}>
+        <Text>Details Screen</Text>
+        <Button
+            title="Go to Details... again"
+            onPress={() => navigation.push('Details')}
+        />
+        <Button title="Go Back" onPress={() => {
+            navigation.goBack();
+        }} />
+        <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+
+    </View>
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator>
+            {/* Routes  name of the route is represented by name */}
+            {/* <Screen name="Home" options={{ title: 'Welcome to Start Token' }} component={HomeScreen} /> */}
+            <Screen name="Home" options={{ title: 'Welcome to Start Token' }}>
+                {props => {
+                    return <HomeScreen {...props}  title="Bank of India - Home" />
+                }}
+            </Screen>
+
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+
+..................................................................................
+			How to pass data to the Compoent via Props
+
+Passing additional props#
+.........................
+
+Sometimes we might want to pass additional props to a screen.
+
+We can do that with 2 approaches:
+
+1.Use React context and wrap the navigator with a context provider to pass data to the screens (recommended).
+
+2.Use a render callback for the screen instead of specifying a component prop:
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    const { navigation } = props;
+    const moveToScreen = () => {
+        navigation.navigate('Details')
+    }
+    return <View style={styles.container}>
+        <Text>{props.title}</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+HomeScreen.defaultProps = {
+    title: 'Your Bank'
+}
+
+export const DetailsScreen = props => {
+    const { navigation } = props;
+    return <View style={styles.container}>
+        <Text>Details Screen</Text>
+        <Button
+            title="Go to Details... again"
+            onPress={() => navigation.push('Details')}
+        />
+        <Button title="Go Back" onPress={() => {
+            navigation.goBack();
+        }} />
+        <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+
+    </View>
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator>
+            {/* Routes  name of the route is represented by name */}
+            {/* <Screen name="Home" options={{ title: 'Welcome to Start Token' }} component={HomeScreen} /> */}
+            <Screen name="Home" options={{ title: 'Welcome to Start Token' }}>
+                {props => {
+                    return <HomeScreen {...props}  title="Bank of India - Home" />
+                }}
+            </Screen>
+
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+.....................................................................................
+How to tell which routes should be displayed first? - as Home
+
+1.Generally Based on order the first screen will be rendered as Home Route.
+2.In the Navigator , we can tell "initialRouteName"
+
+With Screen Order:
+  <NavigationContainer>
+            <Navigator>
+	
+                <Screen name="Home"  options={{ title: 'Welcome to Start Token' }}>
+                    {props => <HomeScreen {...props} extraData={"Start Token"} />}
+                </Screen>
+              
+                <Screen  name="Details" component={DetailsScreen} />
+            </Navigator>
+        </NavigationContainer>
+
+
+With inital Route Name
+eg:
+  <NavigationContainer>
+            <Navigator initialRouteName="Details">
+                {/* <Screen options={{ title: 'Welcome to Start Token' }} name="Home" component={HomeScreen} /> */}
+                <Screen name="Home"  options={{ title: 'Welcome to Start Token' }}>
+                    {props => <HomeScreen {...props} extraData={"Start Token"} />}
+                </Screen>
+              
+                <Screen  name="Details" component={DetailsScreen} />
+            </Navigator>
+        </NavigationContainer>
+Recap:
+
+React Native doesn't have a built-in API for navigation like a web browser does. React Navigation provides this for you, along with the iOS and Android gestures and animations to transition between screens.
+
+Stack.Navigator is a component that takes route configuration as its children with additional props for configuration and renders our content.
+
+Each Stack.Screen component takes a name prop which refers to the name of the route and component prop which specifies the component to render for the route. These are the 2 required props.
+
+To specify what the initial route in a stack is, provide an initialRouteName as the prop for the navigator.
+
+To specify screen-specific options, we can pass an options prop to Stack.Screen, and for common options, we can pass screenOptions to Stack.Navigator
+
+.............................................................................................
+                                        Passing parameters to routes
+............................................................................................
+
+Now that we know how to create a stack navigator with some routes and navigate between those routes, let's look at how we can pass data to routes when we navigate to them.
+
+There are two pieces to this:
+
+Pass params to a route by putting them in an object as a second parameter to the navigation.navigate function: navigation.navigate('RouteName', { /* params go here */ })
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    const { navigation } = props;
+    const moveToScreen = () => {
+        navigation.navigate('Details', { message: 'Hello' })
+    }
+    return <View style={styles.container}>
+        <Text>{props.title}</Text>
+        <Button title="Go Details" onPress={moveToScreen} />
+    </View>
+}
+HomeScreen.defaultProps = {
+    title: 'Your Bank'
+}
+
+export const DetailsScreen = props => {
+
+    //props.route.params
+    const { navigation, route: { params: { message } } } = props;
+    // console.log(route)
+
+    return <View style={styles.container}>
+        <Text>Details Screen</Text>
+        <Text>Data From Home Screen {message}</Text>
+        <Button
+            title="Go to Details... again"
+            onPress={() => navigation.push('Details')}
+        />
+        <Button title="Go Back" onPress={() => {
+            navigation.goBack();
+        }} />
+        <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+
+    </View>
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" options={{ title: 'Welcome to Start Token' }}>
+                {props => {
+                    return <HomeScreen {...props} title="Bank of India - Home" />
+                }}
+            </Screen>
+
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
+export default App;
+.....................................................................................
+			Ajax calls with screen navigation
+.....................................................................................
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, FlatList, StatusBar, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+
+//create Object By calling createNativeStackNavigator function 
+const { Navigator, Screen } = createNativeStackNavigator()
+
+export const HomeScreen = props => {
+    const { navigation } = props;
+    const moveToScreen = () => {
+        navigation.navigate('Post')
+    }
+    return <View style={styles.container}>
+        <Button title="Post" onPress={moveToScreen} />
+    </View>
+}
+HomeScreen.defaultProps = {
+    title: ''
+}
+
+export const PostDetailsScreen = props => {
+    const { navigation, route: { params: { item } } } = props;
+    console.log(item)
+    return <View style={styles.container}>
+        <Text>{
+            JSON.stringify(item)
+        }</Text>
+    </View>
+}
+
+export const PostScreen = props => {
+
+    const { navigation } = props;
+
+    const [posts, setPosts] = useState({
+        error: null, // if any ajax error
+        isLoaded: false, //Progress bar enabler
+        items: []  // data to be filed
+    })
+
+    //componentDid == useEffect 
+    useEffect(() => {
+        const url = 'https://jsonplaceholder.typicode.com/posts'
+        fetch(url)
+            .then(res => res.json())
+            .then(posts => {
+                setTimeout(() => {
+                    setPosts(prvState => {
+                        return { ...prvState, isLoaded: true, items: posts }
+                    });
+                }, 0)
+
+            }, (error) => {
+                setPosts({
+                    isLoaded: true,
+                    error
+                });
+            })
+
+    }, [])
+
+
+    const onPressItem = item => {
+        navigation.navigate('PostDetails', { item: item })
+    }
+    //use object destructuring
+    const { error, items, isLoaded } = posts;
+
+    if (error) {
+        //render error component
+        return <View style={styles.error}> Error: {error.message}</View>;
+    } else if (!isLoaded) {
+        return <View style={styles.loader}>
+            <ActivityIndicator size="large" color="#00ff00" />
+        </View>;
+    } else {
+        return <View styles={styles.container}>
+            <FlatList
+                keyExtractor={(post) => {
+                    return post.id
+                }}
+                data={items}
+                renderItem={
+                    ({ item }) => {
+                        const { title } = item
+                        return <View style={styles.item}>
+                            <Text onPress={() => { onPressItem(item) }} style={styles.title}>{title}</Text>
+                        </View>
+                    }
+                }
+            />
+        </View>
+    }
+
+}
 
 
 
 
 
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" options={{ title: 'Post Application' }}>
+                {props => {
+                    return <HomeScreen {...props} />
+                }}
+            </Screen>
+            <Screen name="Post" component={PostScreen} />
+            <Screen name="PostDetails" component={PostDetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+});
+export default App;
+
+....................................................................................
+			   setParams
+
+Updating params#
+
+Screens can also update their params, like they can update their state. The navigation.setParams method lets you update the params of a screen.
+Basic usage:
+
+navigation.setParams({
+  query: 'someText',
+})
+
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, FlatList, StatusBar, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props;
+    return <View style={styles.container}>
+        <Text>Home Screen : {props.extraData}</Text>
+        <Button title="Go to Details" onPress={() => navigation.navigate('Details', { id: 1, item: 'React Native' })} />
+    </View>
+}
+const DetailsScreen = (props) => {
+    const { navigation, route } = props;
+    console.log(route.params);
+    return (
+        <View style={styles.container}>
+            <Text>Details Screen : {route.params.id} - {route.params.item}</Text>
+            <Button
+                title="Update Params"
+                onPress={() => {
+                    // navigation.push('Details', {
+                    //     id: Math.floor(Math.random() * 100),
+                    // })
+                    navigation.setParams({ id: 900, item: 'foo' })
+                }
+                }
+            />
+        </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'Welcome to Start Token' }} />
+            <Screen name="Details" component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+......................................................................................
+Initial params#
+
+You can also pass some initial params to a screen. If you didn't specify any params when navigating to this screen, the initial params will be used. They are also shallow merged with any params that you pass. Initial params can be specified with an initialParams prop:
+
+<Stack.Screen
+  name="Details"
+  component={DetailsScreen}
+  initialParams={{ itemId: 42 }}
+/>
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, FlatList, StatusBar, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props;
+    return <View style={styles.container}>
+        <Text>Home Screen : {props.extraData}</Text>
+        <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
+    </View>
+}
+const DetailsScreen = (props) => {
+    const { navigation, route } = props;
+    console.log(route.params);
+    return (
+        <View style={styles.container}>
+            <Text>Details Screen : {route.params.id} - {route.params.item}</Text>
+            <Button
+                title="UpdateDefaultParams"
+                onPress={() => {
+                           navigation.setParams({ id: 900, item: 'foo' })
+                }
+                }
+            />
+        </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'Welcome to Start Token' }} />
+            <Screen name="Details" initialParams={{ id: 1, item: 'React Native v2' }} component={DetailsScreen} />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+....................................................................................
+Passing params to a previous screen#
+
+Params aren't only useful for passing some data to a new screen, but they can also be useful to pass data to a previous screen too. For example, let's say you have a screen with a create post button, and the create post button opens a new screen to create a post. After creating the post, you want to pass the data for the post back to previous screen.
+
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props;
+
+    //DidMount,DidUpdate
+    useEffect(() => {
+        if (route.params?.post) {
+            // Post updated, do something with `route.params.post`
+            // For example, send the post to the server
+        }
+    }, [route.params?.post]);
+
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+            title="Create post"
+            onPress={() => navigation.navigate('CreatePost')}
+        />
+        <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
+    </View>
+}
+const CreatePostScreen = (props) => {
+    const { navigation, route } = props;
+
+    const [postText, setPostText] = useState('');
+
+    return (<View style={styles.container}>
+        <TextInput
+            multiline
+            placeholder="What's on your mind?"
+            style={{ height: 200, padding: 10, backgroundColor: 'green' }}
+            value={postText}
+            onChangeText={setPostText}
+        />
+        <Button
+            title="Done"
+            onPress={() => {
+                // Pass params back to home screen
+                navigation.navigate('Home', { post: postText });
+            }}
+        />
+    </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'PostMaster' }} />
+            <Screen component={CreatePostScreen} name="CreatePost" />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+.....................................................................................
+Configuring the header bar
+
+We've seen how to configure the header title already, but let's go over that again before moving on to some other options
+
+A Screen component accepts options prop which is either an object or a function that returns an object, that contains various configuration options. The one we use for the header title is title, as shown in the following example.
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props;
+
+    //DidMount,DidUpdate
+    useEffect(() => {
+        if (route.params?.post) {
+            // Post updated, do something with `route.params.post`
+            // For example, send the post to the server
+        }
+    }, [route.params?.post]);
+
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+            title="Create post"
+            onPress={() => navigation.navigate('CreatePost' ,{title:'My Post Screen'})}
+        />
+        <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
+    </View>
+}
+const CreatePostScreen = (props) => {
+    const { navigation, route } = props;
+
+    const [postText, setPostText] = useState('');
+
+    return (<View style={styles.container}>
+        <TextInput
+            multiline
+            placeholder="What's on your mind?"
+            style={{ height: 200, padding: 10, backgroundColor: 'green' }}
+            value={postText}
+            onChangeText={setPostText}
+        />
+        <Button
+            title="Done"
+            onPress={() => {
+                // Pass params back to home screen
+                navigation.navigate('Home', { post: postText });
+            }}
+        />
+    </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'PostMaster' }} />
+            {/* <Screen component={CreatePostScreen} name="CreatePost" options={{
+                title:"Post Form"
+            }} /> */}
+            <Screen
+                name="CreatePost"
+                component={CreatePostScreen}
+                options={({ route }) => ({ title: route.params.title })}
+            />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+................................................................................
+				Update title with setOptions
+
+
+Updating options with setOptions#
+.................................
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+            title="Update the title"
+            onPress={() => navigation.setOptions({ title: 'Updated!' })}
+        />
+    </View>
+}
+
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'PostMaster' }} />
+
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+Configuring the header bar
+
+We've seen how to configure the header title already, but let's go over that again before moving on to some other options
+
+A Screen component accepts options prop which is either an object or a function that returns an object, that contains various configuration options. The one we use for the header title is title, as shown in the following example.
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props;
+
+    //DidMount,DidUpdate
+    useEffect(() => {
+        if (route.params?.post) {
+            // Post updated, do something with `route.params.post`
+            // For example, send the post to the server
+        }
+    }, [route.params?.post]);
+
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+            title="Create post"
+            onPress={() => navigation.navigate('CreatePost' ,{title:'My Post Screen'})}
+        />
+        <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
+    </View>
+}
+const CreatePostScreen = (props) => {
+    const { navigation, route } = props;
+
+    const [postText, setPostText] = useState('');
+
+    return (<View style={styles.container}>
+        <TextInput
+            multiline
+            placeholder="What's on your mind?"
+            style={{ height: 200, padding: 10, backgroundColor: 'green' }}
+            value={postText}
+            onChangeText={setPostText}
+        />
+        <Button
+            title="Done"
+            onPress={() => {
+                // Pass params back to home screen
+                navigation.navigate('Home', { post: postText });
+            }}
+        />
+    </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'PostMaster' }} />
+            {/* <Screen component={CreatePostScreen} name="CreatePost" options={{
+                title:"Post Form"
+            }} /> */}
+            <Screen
+                name="CreatePost"
+                component={CreatePostScreen}
+                options={({ route }) => ({ title: route.params.title })}
+            />
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+................................................................................
+				Update title with setOptions
+
+
+Updating options with setOptions#
+.................................
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+            title="Update the title"
+            onPress={() => navigation.setOptions({ title: 'Updated!' })}
+        />
+    </View>
+}
+
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home'>
+            <Screen name="Home" component={HomeScreen} options={{ title: 'PostMaster' }} />
+
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+
+
+
+Adjusting header styles#
+.........................
+
+
+There are three key properties to use when customizing the style of your header: headerStyle, headerTintColor, and headerTitleStyle.
+
+headerStyle: a style object that will be applied to the View that wraps the header. If you set backgroundColor on it, that will be the color of your header.
+
+headerTintColor: the back button and title both use this property as their color. In the example below, we set the tint color to white (#fff) so the back button and the header title would be white.
+
+headerTitleStyle: if we want to customize the fontFamily, fontWeight and other Text style properties for the title, we can use this to do it.
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+            title="Update the title"
+            onPress={() => navigation.setOptions({ title: 'Updated!' })}
+        />
+    </View>
+}
+function ProfileScreen({ navigation }) {
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>Profile screen</Text>
+            <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home' screenOptions={
+            {
+                headerStyle: {
+                    backgroundColor: 'pink'
+                }
+            }
+        }>
+            <Screen name="Home" component={HomeScreen} options={
+                { title: 'Home', headerStyle: { backgroundColor: '#f4511e', headerTintColor: '#fff' } }} />
+            <Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ title: 'Profile Screen' }}
+            />
+
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+
+
+
+Sharing common options across screens#
+
+It is common to want to configure the header in a similar way across many screens. For example, your company brand color might be red and so you want the header background color to be red and tint color to be white. Conveniently, these are the colors we're using in our running example, and you'll notice that when you navigate to the DetailsScreen the colors go back to the defaults. Wouldn't it be awful if we had to copy the options header style properties from HomeScreen to DetailsScreen, and for every single screen component we use in our app? Thankfully, we do not. We can instead move the configuration up to the stack navigator under the prop screenOptions
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+            title="Go To Profile"
+            onPress={() => navigation.navigate('Profile')}
+        />
+    </View>
+}
+function ProfileScreen({ navigation }) {
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>Profile screen</Text>
+            <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+    );
+}
+
+const App = () => {
+    return <NavigationContainer>
+        <Navigator initialRouteName='Home' screenOptions={
+            {
+                headerStyle: {
+                    backgroundColor: 'pink'
+                }
+            }
+        }>
+            <Screen name="Home" component={HomeScreen} options={
+                { title: 'Home' }} />
+            <Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ title: 'Profile Screen' }}
+            />
+
+        </Navigator>
+    </NavigationContainer>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+
+export default App;
+.................................................................................
+       Navigating to Different screens through Header Buttons
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+
+
+//create Stack Object
+const { Navigator, Screen } = createNativeStackNavigator();
+
+const HomeScreen = props => {
+    const { navigation, route } = props
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+            title="Go To Profile"
+            onPress={() => navigation.navigate('ProfileScreen')}
+        />
+    </View>
+}
+function ProfileScreen({ navigation }) {
+
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>Profile screen</Text>
+            <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+    );
+}
+
+function App() {
+    return (<NavigationContainer>
+        <Navigator>
+            <Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    headerTitle: (props) => <Text>Header</Text>,
+                    headerRight: () => (
+                        <Button
+                            onPress={() => alert('This is a button!')}
+                            title="Info"
+                            color="black"
+                        />
+                    ),
+                }}
+            />
+            <Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={({ navigation, route }) => ({
+                    headerTitle: (props) => <Text>Counter</Text>,
+                    headerRight: () => (
+                        <Button
+                            onPress={() => navigation.navigate('Home')}
+                            title="Home Screen"
+                            color="black"
+                        />
+                    )
+                })}
+
+            />
+        </Navigator>
+    </NavigationContainer>
+    );
+}
+export default App
+.....................................................................................
+
+...................................................................................
+				Nested Navigation
+
+//Header Buttons
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+//create Stack Object
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+const Home = props => {
+    return <Tab.Navigator>
+        <Tab.Screen name="Feed" component={Feed} />
+        <Tab.Screen name="Messages" component={Messages} />
+    </Tab.Navigator>
+}
+
+const Feed = props => {
+    return <View style={styles.container}>
+        <Text>Feed Screen</Text>
+    </View>
+}
+
+const Messages = props => {
+    return <View style={styles.container}>
+        <Text>Messages Screen</Text>
+    </View>
+}
+const Settings = props => {
+    return <View style={styles.container}>
+        <Text>Settings Screen</Text>
+    </View>
+}
+function App() {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
+    </NavigationContainer>
+
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+export default App
+...................................................................................
+			Navigating from tab to screen
+...................................................................................
+
+//Header Buttons
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet,Button } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+//create Stack Object
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+const Home = props => {
+    return <Tab.Navigator>
+        <Tab.Screen name="Feed" component={Feed} />
+        <Tab.Screen name="Messages" component={Messages} />
+    </Tab.Navigator>
+}
+
+const Feed = props => {
+    return <View style={styles.container}>
+        <Text>Feed Screen</Text>
+    </View>
+}
+
+const Messages = props => {
+    const { navigation } = props;
+    return <View style={styles.container}>
+        <Text>Messages Screen</Text>
+        <Button title="go to Settions" onPress={() => {
+             navigation.navigate('Settings')
+        }} />
+    </View>
+}
+const Settings = props => {
+    return <View style={styles.container}>
+        <Text>Settings Screen</Text>
+    </View>
+}
+function App() {
+    return <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
+    </NavigationContainer>
+
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+export default App
+...................................................................................
+			 Advanced Tabs
+...................................................................................
+
+BottomTab
+TopTab
+
+Possibly the most common style of navigation in mobile apps is tab-based navigation. This can be tabs on the bottom of the screen or on the top below the header (or even instead of a header).
+
+1.createBottomTabNavigator.
+2.createMaterialBottomTabNavigator 
+3.createMaterialTopTabNavigator 
+
+Customizing the appearance​
+
+npm i @expo/vector-icons
+
+// You can import Ionicons from @expo/vector-icons/Ionicons if you use Expo or
+// react-native-vector-icons/Ionicons otherwise.
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+// (...)
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+            } else if (route.name === 'Settings') {
+              iconName = focused ? 'ios-list-box' : 'ios-list';
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+eg:
+//Header Buttons
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+//create Stack Object
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+const Home = props => {
+    console.log(props.route.name)
+    return <Text>Home</Text>
+}
+
+const Feed = props => {
+    return <View style={styles.container}>
+        <Text>Feed Screen</Text>
+    </View>
+}
+
+const Messages = props => {
+    return <View style={styles.container}>
+        <Text>Messages Screen</Text>
+
+    </View>
+}
+const Settings = props => {
+    return <View style={styles.container}>
+        <Text>Settings Screen</Text>
+    </View>
+}
+function App() {
+    return <NavigationContainer>
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    //console.log(route, focused, color, size)
+                    console.log(route)
+                    if (route.name==='Feed') {
+                        return <Ionicons name="md-checkmark-circle" size={32} color="green" />
+                    }
+                    //https://ionic.io/ionicons
+                    return <Ionicons name="cart-outline" size={32} color="red" />
+                },
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
+            })}
+        >
+            <Tab.Screen name="Feed" component={Feed} />
+            <Tab.Screen name="Messages" component={Messages} />
+        </Tab.Navigator>
+    </NavigationContainer>
+
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+export default App
+...................................................................................
+			       Drawer Navigation
+...................................................................................
+
+Common pattern in navigation is to use drawer from left (sometimes right) side for navigating between screens.
+
+Rules:
+
+1.npm install @react-navigation/drawer
+2.expo install react-native-gesture-handler react-native-reanimated
+2.import 'react-native-gesture-handler';
+   this must be top level import
+3.babel.config.js
+
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      'react-native-reanimated/plugin',
+    ],
+  };
+};
 
 
 
 
+import * as React from 'react';
+import { Button, View } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button
+        onPress={() => navigation.navigate('Notifications')}
+        title="Go to notifications"
+      />
+    </View>
+  );
+}
 
+function NotificationsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button onPress={() => navigation.goBack()} title="Go back home" />
+    </View>
+  );
+}
 
+const Drawer = createDrawerNavigator();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen name="Home" component={HomeScreen} />
+        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
+.....................................................................................
 
 
 
