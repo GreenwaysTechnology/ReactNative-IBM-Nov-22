@@ -4619,15 +4619,660 @@ export default function App() {
   );
 }
 .....................................................................................
+https://testing-library.com/docs/react-native-testing-library/example-intro
+.....................................................................................
+			Accessing Device Features
+....................................................................................
+React Native core lib does not provide apis to connect with device features such as camera,contacts,sensors,network...
+
+The Expo SDK provides access to device and system functionality such as contacts, camera, gyroscope, GPS location, and so on, in the form of packages.
+
+You can install any Expo SDK package using the npx expo install command. For example, three different packages are installed using the following command:
+.
+
+Camera Acces:
+
+expo install expo-camera
+
+import { Camera, CameraType } from 'expo-camera';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+export default function App() {
+  const [type, setType] = useState(CameraType.back);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  if (!permission) {
+    // Camera permissions are still loading
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  function toggleCameraType() {
+    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+  }
+
+  return (
+    <View style={styles.container}>
+      <Camera style={styles.camera} type={type}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+            <Text style={styles.text}>Flip Camera</Text>
+          </TouchableOpacity>
+        </View>
+      </Camera>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  camera: {
+    flex: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+  },
+  button: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+});
+
+How to access Contacts?
+
+expo-contacts proivdes access to the devices system contacts, allowing you to get contact information as well as adding , editing, removing contacts.
+
+expo install expo-contacts
 
 
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import * as Contacts from 'expo-contacts';
+
+export default function App() {
+    useEffect(() => {
+        (async () => {
+            const { status } = await Contacts.requestPermissionsAsync();
+            if (status === 'granted') {
+                const { data } = await Contacts.getContactsAsync({
+                    fields: [Contacts.Fields.Emails],
+                });
+
+                if (data.length > 0) {
+                    const contact = data;
+                    console.log(contact);
+                }
+            }
+        })();
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            <Text>Contacts Module Example</Text>
+        </View>
+    );
+}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+....................................................................................
+
+Audio and video
+
+expo install expo-av
+
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, Button } from 'react-native';
+import { Video, AVPlaybackStatus } from 'expo-av';
+
+export default function App() {
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
+  return (
+    <View style={styles.container}>
+      <Video
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+        }}
+        useNativeControls
+        resizeMode="contain"
+        isLooping
+        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      />
+      <View style={styles.buttons}>
+        <Button
+          title={status.isPlaying ? 'Pause' : 'Play'}
+          onPress={() =>
+            status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+          }
+        />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+  video: {
+    alignSelf: 'center',
+    width: 320,
+    height: 200,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+....................................................................................
+				Network
+
+import * as Network from 'expo-network';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+
+export default function App() {
+    const [ip, setIp] = useState('')
+    useEffect(() => {
+        (async () => {
+            const ip = await Network.getIpAddressAsync();
+            console.log(ip)
+            setIp(ip)
+        })();
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            <Text>Ip {ip}</Text>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+.....................................................................................
+Storage: 
+
+ How to store data in mobile device.
+
+expo-sqlite gives your app access to a database that can be queried through a WebSQL-like API. The database is persisted across restarts of your app.
+
+expo install expo-sqlite
+
+How to use sqllite in our project?
+
+import * as SQLite from 'expo-sqlite';
+
+Database db = SQLite.openDatabase(name,version,desc,size)
 
 
+Database Object methods
+
+Database objects are returned by calls to SQLite.openDatabase(). Such an object represents a connection to a database on your device. They support one method:
+
+db.transaction(callback, error, success)-Execute a database transaction.
+
+A Transaction object is passed in as a parameter to the callback parameter for the db.transaction() method on a Database . It allows enqueuing SQL statements to perform in a database transaction. It supports one method:
+
+tx.executeSql(sqlStatement, arguments, success, error)
+
+ResultSet objects
+
+ResultSet objects are returned through second parameter of the success callback for the tx.executeSql() method on a Transaction
 
 
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Constants from 'expo-constants';
+import * as SQLite from 'expo-sqlite';
 
 
+const db = SQLite.openDatabase("db.db");
 
+function Items({ done: doneHeading, onPressItem }) {
+    const [items, setItems] = React.useState(null);
+
+    React.useEffect(() => {
+        db.transaction(tx => {
+            tx.executeSql(
+                `select * from items where done = ?;`,
+                [doneHeading ? 1 : 0],
+                (_, { rows: { _array } }) => setItems(_array)
+            );
+        });
+    }, []);
+
+    const heading = doneHeading ? "Completed" : "Todo";
+
+    if (items === null || items.length === 0) {
+        return null;
+    }
+
+    return (
+        <View style={styles.sectionContainer}>
+            <Text style={styles.sectionHeading}>{heading}</Text>
+            {items.map(({ id, done, value }) => (
+                <TouchableOpacity
+                    key={id}
+                    onPress={() => onPressItem && onPressItem(id)}
+                    style={{
+                        backgroundColor: done ? "#1c9963" : "#fff",
+                        borderColor: "#000",
+                        borderWidth: 1,
+                        padding: 8
+                    }}
+                >
+                    <Text style={{ color: done ? "#fff" : "#000" }}>{value}</Text>
+                </TouchableOpacity>
+            ))}
+        </View>
+    );
+}
+
+export default function App() {
+    const [text, setText] = React.useState(null)
+    const [forceUpdate, forceUpdateId] = useForceUpdate()
+
+ 
+
+    React.useEffect(() => {
+        db.transaction(tx => {
+            tx.executeSql(
+                "create table if not exists items (id integer primary key not null, done int, value text);"
+            );
+        });
+    }, []);
+
+    const add = (text) => {
+        // is text empty?
+        if (text === null || text === "") {
+            return false;
+        }
+
+        db.transaction(
+            tx => {
+                tx.executeSql("insert into items (done, value) values (0, ?)", [text]);
+                tx.executeSql("select * from items", [], (_, { rows }) =>
+                    console.log(JSON.stringify(rows))
+                );
+            },
+            null,
+            forceUpdate
+        );
+    }
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.heading}>SQLite Example</Text>
+            <View style={styles.flexRow}>
+                <TextInput
+                    onChangeText={text => setText(text)}
+                    onSubmitEditing={() => {
+                        add(text);
+                        setText(null);
+                    }}
+                    placeholder="what do you need to do?"
+                    style={styles.input}
+                    value={text}
+                />
+            </View>
+            <ScrollView style={styles.listArea}>
+                <Items
+                    key={`forceupdate-todo-${forceUpdateId}`}
+                    done={false}
+                    onPressItem={id =>
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(`update items set done = 1 where id = ?;`, [
+                                    id
+                                ]);
+                            },
+                            null,
+                            forceUpdate
+                        )
+                    }
+                />
+                <Items
+                    done
+                    key={`forceupdate-done-${forceUpdateId}`}
+                    onPressItem={id =>
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(`delete from items where id = ?;`, [id]);
+                            },
+                            null,
+                            forceUpdate
+                        )
+                    }
+                />
+            </ScrollView>
+        </View>
+    );
+
+}
+
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return [() => setValue(value + 1), value];
+}
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: "#fff",
+        flex: 1,
+        paddingTop: Constants.statusBarHeight
+    },
+    heading: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    flexRow: {
+        flexDirection: "row"
+    },
+    input: {
+        borderColor: "#4630eb",
+        borderRadius: 4,
+        borderWidth: 1,
+        flex: 1,
+        height: 48,
+        margin: 16,
+        padding: 8
+    },
+    listArea: {
+        backgroundColor: "#f0f0f0",
+        flex: 1,
+        paddingTop: 16
+    },
+    sectionContainer: {
+        marginBottom: 16,
+        marginHorizontal: 16
+    },
+    sectionHeading: {
+        fontSize: 18,
+        marginBottom: 8
+    }
+});
+.....................................................................................
+				Sharing Files/data
+....................................................................................
+
+expo install expo-sharing
+expo install image-picker
+
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as Sharing from 'expo-sharing';
+
+export default function App() {
+  let [selectedImage, setSelectedImage] = React.useState(null);
+
+  let openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+
+    setSelectedImage({ localUri: pickerResult.uri });
+  };
+
+  let openShareDialogAsync = async () => {
+    if (!(await Sharing.isAvailableAsync())) {
+      alert(`Uh oh, sharing isn't available on your platform`);
+      return;
+    }
+
+    await Sharing.shareAsync(selectedImage.localUri);
+  };
+
+  if (selectedImage !== null) {
+    return (
+      <View style={styles.container}>
+        <Image source={{ uri: selectedImage.localUri }} style={styles.thumbnail} />
+        <TouchableOpacity onPress={openShareDialogAsync} style={styles.button}>
+          <Text style={styles.buttonText}>Share this photo</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <Image source={{ uri: 'https://i.imgur.com/TkIrScD.png' }} style={styles.logo} />
+      <Text style={styles.instructions}>
+        To share a photo from your phone with a friend, just press the button below!
+      </Text>
+
+      <TouchableOpacity onPress={openImagePickerAsync} style={styles.button}>
+        <Text style={styles.buttonText}>Pick a photo</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 305,
+    height: 159,
+    marginBottom: 20,
+  },
+  instructions: {
+    color: '#888',
+    fontSize: 18,
+    marginHorizontal: 15,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: 'blue',
+    padding: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff',
+  },
+  thumbnail: {
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
+  },
+});
+.....................................................................................				Redux
+.....................................................................................
+
+Generally we keep component state inside component and mutations we do inside component only. This is not recommended, UI layer should not hold any complex biz logic and data management.
+
+Statement Management libs comes into picture.
+
+What is Redux? 
+ It is a statement management lib which manages state - stores the app state,process the state,pass the state to ui
+
+
+Redux core concepts:
+
+1.Reducer :
+   It is  a pure function, having state and biz logic
+2.action :
+   It is a request contains what to do 
+3.dispatcher 
+   It is a transporter which transports action object to the reducer
+4.store
+   It is a centeralized place where all application data is stored.
+
+
+Steps:
+1.redux logic
+
+2.react logic
+
+Redux ToolKit : for statement Management
+
+npm install @reduxjs/toolkit 
+npm install react-redux  - binding react(ui) with redux.
+
+ReactNative with Redux:
+import { React, useState } from 'react'
+import { View, Text, StyleSheet, Button } from 'react-native'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider, useSelector, useDispatch } from 'react-redux'
+
+////////////////////////////////////////////////////////////////////////////////////
+//StateManagement 
+
+//Reducer: it is function pure function ; having biz logic 
+//state is just variable holding inital state of app
+//action is just variable holdig object(request payload)
+//action  = {type:'counter/increment'}
+
+export const IncrementReducer = (state = { counter: 100 }, action) => {
+    //biz 
+    switch (action.type) {
+        case 'counter/increment':
+            //return immutable object 
+            return { ...state, counter: state.counter + 1 }
+        default:
+            return state;  // return default state
+    }
+}
+
+//read parameter from the user interface
+export const IncrementByAmountReducer = (state = { counter: 100 }, action) => {
+    //biz 
+    switch (action.type) {
+        case 'counter/incrementByAmount':
+            //return immutable object 
+            return { ...state, counter: state.counter + action.value }
+        default:
+            return state;  // return default state
+    }
+}
+
+export const DecrementReducer = (state = { counter: 100 }, action) => {
+    //biz 
+    switch (action.type) {
+        case 'counter/decrement':
+            //return immutable object 
+            return { ...state, counter: state.counter - 1 }
+        default:
+            return state;  // return default state
+    }
+}
+
+//store.js 
+//store Object 
+export const store = configureStore({
+    reducer: { IncrementReducer, DecrementReducer, IncrementByAmountReducer }
+})
+
+////////////////////////////////////////////////////////////////////////////////////
+//UI code : will not have any biz logic
+export const Counter = props => {
+    //how to grab redux state into react component
+    const incrementedValue = useSelector(state => {
+        console.log(state)
+        return state.IncrementReducer.counter
+    })
+    const decrementedValue = useSelector(state => {
+        console.log(state)
+        return state.DecrementReducer.counter
+    })
+    const incrementByAmtValue = useSelector(state => {
+        return state.IncrementByAmountReducer.counter
+    })
+
+    ///
+    const dispatch = useDispatch()
+
+    const onIncrement = () => {
+        //send request to redux to increment counter 
+        dispatch({ type: 'counter/increment' })
+    }
+    const onDecrement = () => {
+        //send request to redux to increment counter 
+        dispatch({ type: 'counter/decrement' })
+    }
+
+    return <>
+        <Text>Incrementer {incrementedValue} Decrementer : {decrementedValue} Input With Counter {incrementByAmtValue}</Text>
+        <Button title="Increment" onPress={onIncrement} />
+        <Button title="Decrement" onPress={onDecrement} />
+        <Button title="IncrementByAmount" onPress={() => {
+            dispatch({ type: 'counter/incrementByAmount' , value:2})
+        }} />
+
+    </>
+}
+
+const Root = () => <Provider store={store}>
+    <Counter />
+</Provider>
+//Root Component
+const App = () => <View style={styles.container}>
+    <Root />
+</View>
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+export default App;
 
 
 
